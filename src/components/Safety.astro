@@ -1,0 +1,191 @@
+---
+// `w` = icon crop width (px in the 147px-tall source); `x` = desktop centre, `px` = phone centre.
+const checks = [
+  { title: 'PHYSICAL SAFETY', text: ['No sharp points', 'or edges'], w: 149, x: 333.6, px: 92 },
+  { title: 'FLAMMABILITY', text: ['Class 1 - Passed'], w: 137, x: 551, px: 203 },
+  { title: 'CHEMICAL SAFETY', text: ['Harmful substances', 'tested'], w: 111, x: 769.6, px: 312 },
+  { title: 'PHTHALATES FREE', text: ['Certified phthalate-', 'free apparel'], w: 145, x: 968, px: 92 },
+  { title: 'ZERO FORMALDEHYDE', text: ['Safe for hyper-', 'sensitive skin.'], w: 148, x: 1180, px: 203 },
+  { title: 'SAFETY DETAILS', text: ['Accessories tested', 'where applicable'], w: 160, x: 1389.7, px: 312 },
+];
+---
+
+<section class="safety" id="safety" aria-labelledby="safety-title">
+  <div class="frame">
+    <span class="rule rule-l" aria-hidden="true"></span>
+    <h2 id="safety-title">SAFETY AND QUALITY</h2>
+    <span class="rule rule-r" aria-hidden="true"></span>
+
+    <p class="headline">CHECKED BEFORE IT’S CHERISHED</p>
+    <p class="sub">
+      Because what touches them deserves more <br class="only-phone" />than a second thought.
+    </p>
+
+    <ul class="checks">
+      {
+        checks.map((c, i) => (
+          <li style={`--x:${c.x};--px:${c.px};--w:${c.w}`}>
+            <img src={`/images/safety-icon-${i + 1}.webp`} alt="" width={c.w} height="147" loading="lazy" decoding="async" />
+            <strong>{c.title}</strong>
+            <span>
+              {c.text.map((line, j) => (
+                <>
+                  {j > 0 && <br />}
+                  {line}
+                </>
+              ))}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <img class="trees" src="/images/safety-trees.webp" alt="" width="2007" height="326" loading="lazy" decoding="async" />
+  </div>
+</section>
+
+<style lang="scss">
+  $top: 4825;
+  $p-top: 1790;
+
+  .safety {
+    @include band($top, 895, $p-top, 452);
+  }
+
+  h2 {
+    @include center-on(869, 4892 - 20 - $top, 700);
+    font-weight: 500;
+    @include text(40, 40);
+
+    @include phone {
+      @include center-on(204.5, 1810 - 10 - $p-top, 402);
+      @include text(20, 20);
+    }
+  }
+
+  .rule {
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .rule-l {
+    @include at(247, 4892 - $top, 390, 1);
+
+    @include phone {
+      @include at(46, 1810 - $p-top, 45.5, 1);
+    }
+  }
+
+  .rule-r {
+    @include at(1091, 4892 - $top, 373, 1);
+
+    @include phone {
+      @include at(312, 1810 - $p-top, 46, 1);
+    }
+  }
+
+  .headline {
+    @include center-on(868, 4988 - 32 - $top, 1400);
+    font-family: var(--font-display);
+    @include text(61, 64);
+
+    @include phone {
+      @include center-on(205, 1842.5 - 10 - $p-top, 402);
+      @include text(19, 20);
+    }
+  }
+
+  .sub {
+    @include center-on(868.5, 5044.7 - 24 - $top, 1400);
+    color: var(--taupe);
+    font-weight: 400;
+    @include text(30, 48);
+
+    @include phone {
+      @include center-on(205, 1863 - 9 - $p-top, 402);
+      @include text(12, 18);
+    }
+  }
+
+  .checks {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      // Each column is centred on its icon; text never wraps unexpectedly.
+      --icon-h: 110;
+      --icon-top: 278;
+      position: absolute;
+      left: calc((var(--x) - 150) * var(--u));
+      top: calc(var(--icon-top) * var(--u));
+      width: u(300);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      white-space: nowrap;
+
+      @include phone {
+        --icon-h: 39.7;
+        --icon-top: #{1933 - 19.85 - $p-top};
+        left: calc((var(--px) - 60) * var(--u));
+        width: u(120);
+
+        &:nth-child(n + 4) {
+          --icon-top: #{2057 - 19.85 - $p-top};
+        }
+      }
+    }
+
+    img {
+      width: calc(var(--w) * var(--icon-h) / 147 * var(--u));
+      height: calc(var(--icon-h) * var(--u));
+    }
+
+    strong {
+      margin-top: u(41);
+      font-weight: 500;
+      @include text(18, 24);
+
+      @include phone {
+        margin-top: u(10.3);
+        @include text(10, 12);
+      }
+    }
+
+    span {
+      margin-top: u(9.2);
+      color: var(--taupe);
+      font-weight: 400;
+      @include text(18, 27);
+
+      @include phone {
+        margin-top: u(4);
+        @include text(10, 16);
+      }
+    }
+
+    @include phone {
+      li:nth-child(n + 4) {
+        strong {
+          margin-top: u(14.3);
+        }
+
+        span {
+          margin-top: u(19.5);
+          line-height: u(15);
+        }
+      }
+    }
+  }
+
+  .trees {
+    @include at(-7, 5326 - $top, 1739, 282.5);
+    pointer-events: none;
+
+    @include phone {
+      @include at(0, 2166 - $p-top, 402, 65.3);
+    }
+  }
+</style>

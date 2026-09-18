@@ -1,0 +1,267 @@
+---
+interface FooterLink {
+  label: string;
+  href?: string;
+  external?: boolean;
+  region?: boolean;
+}
+
+const columns: { title: string; x: number; px: number; top: number; links: FooterLink[] }[] = [
+  {
+    title: 'DISCOVER',
+    x: 1146,
+    px: 124.6,
+    top: 6485.6,
+    links: [
+      { label: 'Our Story', href: '#giving' },
+      { label: 'Our Philosophy', href: '#giving' },
+      { label: 'The Editions', href: '#fashion' },
+      { label: 'Gifting', href: '#bundles' },
+    ],
+  },
+  {
+    title: 'INFORMATION',
+    x: 1344,
+    px: 223,
+    top: 6485.6,
+    links: [
+      { label: 'Materials & Safety', href: '#safety' },
+      { label: 'Journal', href: '#top' },
+      { label: 'Contact', href: 'mailto:customersupport@pythal.com' },
+      { label: 'Choose Region', region: true },
+    ],
+  },
+  {
+    title: 'FOLLOW',
+    x: 1585,
+    px: 334,
+    top: 6485.6,
+    links: [
+      { label: 'Instagram', href: 'https://www.instagram.com/pythal.ae/', external: true },
+      { label: 'Pinterest', href: 'https://www.pinterest.com/pythalae/', external: true },
+    ],
+  },
+];
+const top = 6292;
+---
+
+<footer class="footer" id="newsletter">
+  <div class="frame">
+    <div class="newsletter">
+      <h2>PYTHAL NEWSLETTER</h2>
+      <p class="intro">
+        Subscribe to our newsletter to stay up to date on <br class="only-desktop" />Pythal news and special events.
+      </p>
+      <form class="form" data-newsletter novalidate>
+        <label class="visually-hidden" for="newsletter-email">Email address</label>
+        <input id="newsletter-email" name="email" type="email" autocomplete="email" placeholder="Email: (ex. name@domain.com)" required />
+        <button type="submit">Subscribe</button>
+      </form>
+      <p class="terms">By subscribing I agree to the terms of use and <br class="only-desktop" />privacy policy.</p>
+      <p class="status" role="status" data-newsletter-status></p>
+    </div>
+
+    <img class="child" src="/images/footer-child.webp" alt="" width="1080" height="1440" loading="lazy" decoding="async" />
+
+    {
+      columns.map((col) => (
+        <nav class="col" aria-label={col.title} style={`--x:${col.x};--px:${col.px};--links:${col.top - top}`}>
+          <h2>{col.title}</h2>
+          <ul>
+            {col.links.map((link) => (
+              <li>
+                {link.region ? (
+                  <button type="button" data-region-open>
+                    {link.label}
+                  </button>
+                ) : (
+                  <a href={link.href} {...(link.external ? { target: '_blank', rel: 'noopener' } : {})}>
+                    {link.label}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </nav>
+      ))
+    }
+  </div>
+</footer>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-newsletter]');
+  const status = document.querySelector<HTMLElement>('[data-newsletter-status]');
+
+  form?.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const input = form.elements.namedItem('email') as HTMLInputElement;
+    if (!input.checkValidity()) {
+      input.reportValidity();
+      return;
+    }
+    if (status) status.textContent = 'Thank you — you’re subscribed.';
+    form.reset();
+  });
+</script>
+
+<style lang="scss">
+  $top: 6292;
+  $p-top: 2630;
+
+  .footer {
+    @include band($top, 532, $p-top, 246);
+    overflow: hidden;
+    // Footer typography follows the approved live design (Avenir Next).
+    font-family: 'Avenir Next', Avenir, 'Nunito Sans', 'Helvetica Neue', Arial, sans-serif;
+    color: #34302d;
+  }
+
+  .newsletter {
+    h2 {
+      @include at(72, 145);
+      font-weight: 700;
+      color: var(--ink);
+      @include text(20, 20);
+
+      @include phone {
+        @include at(21, 2648 - 7 - $p-top);
+        @include text(12, 14);
+      }
+    }
+  }
+
+  .intro {
+    @include at(72, 184, 480);
+    font-weight: 400;
+    @include text(14, 20.3);
+
+    @include phone {
+      @include at(21, 2671 - 7.8 - $p-top, 368);
+      @include text(10, 15.6);
+    }
+  }
+
+  .form {
+    input {
+      @include at(72, 248.8, 396, 36);
+      padding: 0 u(14);
+      border: 1px solid #c4c4c4;
+      border-radius: 999px;
+      background: #fff;
+      font-family: inherit;
+      font-weight: 400;
+      @include text(14);
+
+      &::placeholder {
+        color: #6f6b68;
+      }
+
+      @include phone {
+        @include at(17.7, 2694 - $p-top, 201, 25);
+        padding: 0 u(6);
+        @include text(10);
+      }
+    }
+
+    button {
+      @include at(476, 256.8);
+      font-family: inherit;
+      font-weight: 700;
+      color: var(--ink);
+      @include text(14, 20);
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      @include phone {
+        @include at(228, 2705 - 10 - $p-top);
+        @include text(12, 20);
+      }
+    }
+  }
+
+  .terms {
+    @include at(72, 309, 480);
+    font-weight: 400;
+    @include text(14, 20.3);
+
+    @include phone {
+      @include at(21, 2735.6 - 8 - $p-top, 380);
+      @include text(10, 16);
+    }
+  }
+
+  .status {
+    @include at(72, 360, 480);
+    color: var(--taupe);
+    @include text(14, 20);
+
+    @include phone {
+      @include at(21, 2748 - $p-top, 380);
+      @include text(11, 14);
+    }
+  }
+
+  .child {
+    @include at(612, 0, 427, 569.3);
+
+    @include phone {
+      @include at(13, 2738 - $p-top, 105.3, 140.4);
+    }
+  }
+
+  .col {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: 0;
+
+    @include phone {
+      left: calc(var(--px) * var(--u));
+    }
+
+    h2 {
+      position: absolute;
+      top: u(145);
+      font-weight: 700;
+      color: var(--ink);
+      @include text(20, 20);
+      white-space: nowrap;
+
+      @include phone {
+        top: u(2783.6 - 7 - $p-top);
+        @include text(12, 14);
+      }
+    }
+
+    ul {
+      position: absolute;
+      top: calc(var(--links) * var(--u));
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      white-space: nowrap;
+
+      @include phone {
+        top: u(2806 - 7.65 - $p-top);
+      }
+    }
+
+    a,
+    button {
+      display: block;
+      text-align: left;
+      font-family: inherit;
+      font-weight: 400;
+      @include text(14, 20.3);
+
+      &:hover {
+        text-decoration: underline;
+      }
+
+      @include phone {
+        @include text(10, 15.3);
+      }
+    }
+  }
+</style>

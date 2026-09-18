@@ -1,0 +1,189 @@
+---
+// Welcome offer shown once per session (Figma frames "Desktop - 19" / "iPhone 17 - 7").
+---
+
+<dialog class="popup" aria-labelledby="popup-title" tabindex="-1" autofocus data-popup>
+  <img class="photo" src="/images/newsletter-child.webp" alt="" width="924" height="1295" loading="lazy" decoding="async" />
+  <div class="body">
+    <h2 id="popup-title">PYTHAL NEWSLETTER</h2>
+    <p class="only-desktop">
+      Get 5% off on your first Pythal Order when you sign<br />
+      up, and be the first to experience our new launch &amp;<br />
+      exclusive offers.
+    </p>
+    <p class="only-phone">
+      Get 5% off on your first Pythal Order<br />
+      when you sign up, and be the first to<br />
+      experience our new launch &amp;<br />
+      exclusive offers.
+    </p>
+    <a class="register" href="#newsletter" data-popup-register>-REGISTER-</a>
+  </div>
+  <button class="close" type="button" aria-label="Close" data-popup-close>
+    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m1 1 10 10M11 1 1 11" stroke="currentColor"></path></svg>
+  </button>
+</dialog>
+
+<script>
+  const KEY = 'pythal:newsletter-popup-seen';
+  const popup = document.querySelector<HTMLDialogElement>('[data-popup]');
+
+  const seen = () => {
+    try {
+      return sessionStorage.getItem(KEY) === '1';
+    } catch {
+      return false;
+    }
+  };
+  const markSeen = () => {
+    try {
+      sessionStorage.setItem(KEY, '1');
+    } catch {
+      /* storage unavailable (private mode) — the popup simply shows again */
+    }
+  };
+
+  if (popup && !seen()) {
+    setTimeout(() => {
+      if (document.querySelector('dialog[open]')) return;
+      popup.showModal();
+      markSeen();
+    }, 1200);
+  }
+
+  popup?.querySelector('[data-popup-close]')?.addEventListener('click', () => popup.close());
+  popup?.addEventListener('click', (event) => {
+    if (event.target === popup) popup.close();
+  });
+  popup?.querySelector('[data-popup-register]')?.addEventListener('click', () => {
+    popup.close();
+    setTimeout(() => document.getElementById('newsletter-email')?.focus({ preventScroll: true }), 600);
+  });
+</script>
+
+<style lang="scss">
+  .popup {
+    width: u(1293);
+    height: u(760);
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: 0;
+    background: #fff;
+    overflow: hidden;
+    outline: none;
+
+    &[open] {
+      display: flex;
+      animation: pop 0.35s ease;
+    }
+
+    &::backdrop {
+      background: rgb(0 0 0 / 0.32);
+    }
+
+    @include phone {
+      width: u(372);
+      height: u(213);
+    }
+  }
+
+  .photo {
+    flex: none;
+    width: u(544);
+    height: 100%;
+    object-fit: cover;
+
+    @include phone {
+      width: u(157);
+    }
+  }
+
+  .body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: u(235 - 32);
+
+    @include phone {
+      padding-top: u(48 - 10);
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-weight: 400;
+      @include text(58.5, 64);
+      white-space: nowrap;
+
+      @include phone {
+        @include text(18.3, 20);
+      }
+    }
+
+    p {
+      margin-top: u(355 - 18 - 267);
+      @include text(24, 36);
+
+      @include phone {
+        margin-top: u(89 - 7.35 - 58);
+        @include text(10, 14.7);
+      }
+    }
+  }
+
+  .register {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: u(258);
+    height: u(44);
+    margin-top: u(518 - 445);
+    border-radius: 999px;
+    background: var(--cocoa);
+    color: #fff;
+    font-weight: 500;
+    @include text(20);
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background: #664e3e;
+    }
+
+    @include phone {
+      width: u(74);
+      height: u(13.5);
+      margin-top: u(159 - 140.35);
+      @include text(7);
+    }
+  }
+
+  .close {
+    position: absolute;
+    top: u(18);
+    right: u(18);
+    width: u(22);
+    height: u(22);
+    color: #6d6d6d;
+
+    @include phone {
+      top: u(6);
+      right: u(6);
+      width: u(10);
+      height: u(10);
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: translateY(12px) scale(0.98);
+    }
+  }
+</style>

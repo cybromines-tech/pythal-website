@@ -1,0 +1,136 @@
+---
+import Heart from './Heart.astro';
+---
+
+<section class="giving" id="giving" aria-labelledby="giving-title">
+  <div class="frame">
+    <span class="rule rule-l" aria-hidden="true"></span>
+    <h2 id="giving-title">The Art Of Giving</h2>
+    <span class="rule rule-r" aria-hidden="true"></span>
+
+    <p class="verse verse-1">
+      For the little soul I came to love,<br />
+      a little piece of love from me.<br />
+      For tiny hands to hold today,<br />
+      and little memories yet to be.
+    </p>
+    <Heart class="heart" />
+    <p class="verse verse-2">
+      A gift for now,<br />
+      a love to stay,<br />
+      a memory to find<br />
+      along the way.
+    </p>
+    <p class="signoff">PYTHAL<br />MADE FOR THE LOVE WE LEAVE BEHIND.</p>
+
+    <img
+      class="art"
+      src="/images/giving-art.webp"
+      alt="Two hands offering the Pythal house gift box, tied with a ribbon that curls into a heart"
+      width="1493"
+      height="575"
+      loading="lazy"
+      decoding="async"
+    />
+  </div>
+</section>
+
+<style lang="scss">
+  $top: 2370;
+  $p-top: 965;
+
+  .giving {
+    @include band($top, 1335, $p-top, 505);
+    z-index: 1;
+  }
+
+  h2 {
+    @include center-on(873.5, 2435 - $top - 75, 700);
+    font-family: var(--font-script);
+    font-weight: 400;
+    @include text(69.5, 150);
+    white-space: nowrap;
+
+    @include phone {
+      @include center-on(207.8, 995 - $p-top - 30, 402);
+      @include text(22.4, 60);
+    }
+  }
+
+  .rule {
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .rule-l {
+    @include at(497, 2435 - $top, 120, 1);
+
+    @include phone {
+      @include at(77.7, 995 - $p-top, 47, 1);
+    }
+  }
+
+  .rule-r {
+    @include at(1152, 2435 - $top, 120, 1);
+
+    @include phone {
+      @include at(292, 995 - $p-top, 48, 1);
+    }
+  }
+
+  .verse,
+  .signoff {
+    color: var(--ink-soft);
+  }
+
+  .verse {
+    @include text(32, 48);
+
+    @include phone {
+      @include text(12, 18);
+    }
+  }
+
+  .verse-1 {
+    @include center-on(855, 2538 - 24 - $top, 900);
+
+    @include phone {
+      @include center-on(210.5, 1043 - 9 - $p-top, 402);
+    }
+  }
+
+  .verse-2 {
+    @include center-on(855, 2824 - 24 - $top, 900);
+
+    @include phone {
+      @include center-on(210.5, 1150 - 9 - $p-top, 402);
+    }
+  }
+
+  :global(.heart) {
+    @include at(855 - 20.5, 2752 - 20.5 - $top, 41, 41);
+    color: var(--heart);
+
+    @include phone {
+      @include at(210.5 - 7, 1123 - 7 - $p-top, 14, 14);
+    }
+  }
+
+  .signoff {
+    @include center-on(855.5, 3111 - 25.5 - $top, 1000);
+    @include text(32, 51);
+
+    @include phone {
+      @include center-on(211, 1259 - 9 - $p-top, 402);
+      @include text(12, 18);
+    }
+  }
+
+  .art {
+    @include at(0, 3133 - $top, 1493, 575);
+
+    @include phone {
+      @include at(0, 1294 - $p-top, 402, 154.8);
+    }
+  }
+</style>

@@ -1,0 +1,122 @@
+---
+// Five stadium frames: the outer two bleed off the page edges on desktop.
+const frames = [
+  { cls: 'edge-l' },
+  { cls: 'side-l', video: '/video/v4-web.mp4' },
+  { cls: 'center', video: '/video/v5-web.mp4' },
+  { cls: 'side-r', video: '/video/v6-web.mp4' },
+  { cls: 'edge-r' },
+];
+---
+
+<section class="fashion" id="fashion" aria-labelledby="fashion-title">
+  <div class="frame">
+    <span class="rule rule-l" aria-hidden="true"></span>
+    <h2 id="fashion-title">FASHION AND STYLE</h2>
+    <span class="rule rule-r" aria-hidden="true"></span>
+
+    {
+      frames.map((f) => (
+        <div class:list={['look', f.cls]} aria-hidden={f.video ? undefined : 'true'}>
+          {f.video && (
+            <video muted loop playsinline preload="none" data-autoplay aria-label="Pythal fashion film">
+              <source src={f.video} type="video/mp4" />
+            </video>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style lang="scss">
+  $top: 3705;
+  $p-top: 1470;
+
+  .fashion {
+    @include band($top, 1120, $p-top, 320);
+  }
+
+  h2 {
+    @include center-on(869, 3740 - 20 - $top, 700);
+    font-weight: 500;
+    @include text(40, 40);
+
+    @include phone {
+      @include center-on(201.5, 1490.7 - 10 - $p-top, 402);
+      @include text(20, 20);
+    }
+  }
+
+  .rule {
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .rule-l {
+    @include at(247, 3740 - $top, 390, 1);
+
+    @include phone {
+      @include at(51, 1490.7 - $p-top, 44, 1);
+    }
+  }
+
+  .rule-r {
+    @include at(1091, 3740 - $top, 373, 1);
+
+    @include phone {
+      @include at(308, 1490.7 - $p-top, 46, 1);
+    }
+  }
+
+  .look {
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--placeholder);
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .edge-l {
+    @include at(-406, 3971 - $top, 436, 638);
+  }
+
+  .side-l {
+    @include at(79, 3971 - $top, 436, 638);
+
+    @include phone {
+      @include at(-18, 1555 - $p-top, 127, 184);
+    }
+  }
+
+  .center {
+    @include at(587, 3881.6 - $top, 560, 818);
+
+    @include phone {
+      @include at(129, 1530 - $p-top, 163, 235);
+    }
+  }
+
+  .side-r {
+    @include at(1220, 3971 - $top, 436, 638);
+
+    @include phone {
+      @include at(312, 1555 - $p-top, 127, 184);
+    }
+  }
+
+  .edge-r {
+    @include at(1706, 3971 - $top, 436, 638);
+  }
+
+  .edge-l,
+  .edge-r {
+    @include phone {
+      display: none;
+    }
+  }
+</style>

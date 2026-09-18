@@ -1,0 +1,253 @@
+---
+import Arrow from './Arrow.astro';
+
+const nav = [
+  { label: 'OUR STORY', menuLabel: 'Our Story', href: '#giving', x: 354 },
+  { label: 'COLLECTIONS', menuLabel: 'Collections', href: '#fashion', x: 633 },
+  { label: 'GIFTING', menuLabel: 'Gifting', href: '#giving', x: 940 },
+  { label: 'BUNDLES', menuLabel: 'Bundles', href: '#bundles', x: 1225 },
+];
+const shopUrl = 'https://pythal.ae/';
+---
+
+<header class="site-header" id="top">
+  <div class="strip">THE FIRST THAT LASTS</div>
+
+  <div class="frame">
+    <button class="burger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="menu" data-menu-open>
+      <span></span><span></span><span></span>
+    </button>
+
+    <a class="logo" href="#top" aria-label="Pythal home">
+      <img src="/images/logo.png" alt="Pythal" width="102" height="76" />
+    </a>
+
+    <nav class="nav only-desktop" aria-label="Primary">
+      {nav.map((item) => <a href={item.href} style={`--x:${item.x}`}>{item.label}</a>)}
+    </nav>
+
+    <a class="shop pill" href={shopUrl} target="_blank" rel="noopener">
+      <span class="only-desktop">SHOP PYTHAL</span><span class="only-phone">SHOP</span>
+      <Arrow class="only-desktop" />
+    </a>
+
+    <a class="bag only-phone" href={shopUrl} target="_blank" rel="noopener" aria-label="Shopping bag">
+      <svg viewBox="0 0 11 16" fill="none" aria-hidden="true">
+        <path d="M.5 3.5h10v11a1 1 0 0 1-1 1h-8a1 1 0 0 1-1-1v-11Z" stroke="currentColor" stroke-width=".8"></path>
+        <path d="M3 3.5V2.6A2.5 2.1 0 0 1 8 2.6v.9" stroke="currentColor" stroke-width=".8"></path>
+        <path d="M3.4 7.2c.5 1.3 1.2 1.9 2.1 1.9s1.6-.6 2.1-1.9" stroke="currentColor" stroke-width=".8" stroke-linecap="round"></path>
+      </svg>
+    </a>
+  </div>
+
+  <div class="menu" id="menu" hidden data-menu>
+    <div class="menu-backdrop" data-menu-close></div>
+    <nav class="menu-panel" aria-label="Menu">
+      <a class="menu-login" href={shopUrl} target="_blank" rel="noopener">
+        <svg viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <circle cx="7" cy="4.2" r="3.2" stroke="currentColor" stroke-width=".8"></circle>
+          <path d="M.8 13.4c.6-3 3.1-4.8 6.2-4.8s5.6 1.8 6.2 4.8" stroke="currentColor" stroke-width=".8"></path>
+        </svg>
+        Hi, Login
+      </a>
+      <ul>
+        {nav.map((item) => <li><a href={item.href} data-menu-close>{item.menuLabel}</a></li>)}
+      </ul>
+      <ul>
+        <li><a href="#bundles" data-menu-close>Find a gift</a></li>
+        <li><button type="button" data-region-open data-menu-close>Choose your Pythal</button></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const opener = document.querySelector<HTMLButtonElement>('[data-menu-open]');
+
+  const setOpen = (open: boolean) => {
+    if (!menu || !opener) return;
+    menu.hidden = !open;
+    opener.setAttribute('aria-expanded', String(open));
+    document.documentElement.classList.toggle('menu-open', open);
+    if (open) menu.querySelector<HTMLElement>('a, button')?.focus();
+    else opener.focus({ preventScroll: true });
+  };
+
+  opener?.addEventListener('click', () => setOpen(Boolean(menu?.hidden)));
+  menu?.querySelectorAll('[data-menu-close]').forEach((el) => el.addEventListener('click', () => setOpen(false)));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && menu && !menu.hidden) setOpen(false);
+  });
+  matchMedia('(min-width: 768px)').addEventListener('change', (event) => {
+    if (event.matches && menu && !menu.hidden) setOpen(false);
+  });
+</script>
+
+<style lang="scss">
+  .site-header {
+    @include band(0, 205, 0, 87);
+    z-index: 10;
+  }
+
+  .strip {
+    position: absolute;
+    inset: 0 0 auto;
+    height: u(67);
+    padding-bottom: u(7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+    font-weight: 500;
+    @include text(18);
+    letter-spacing: 0.01em;
+
+    @include phone {
+      height: u(44);
+      padding-bottom: 0;
+      border-bottom: 1px solid rgb(0 0 0 / 0.45);
+      @include text(12);
+    }
+  }
+
+  .logo {
+    @include at(62, 105, 95);
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+
+    @include phone {
+      @include at(186.3, 95 - $phone-status-bar, 28.6);
+    }
+  }
+
+  .nav a {
+    position: absolute;
+    left: calc(var(--x) * var(--u));
+    top: u(126.5);
+    font-weight: 400;
+    @include text(18, 27);
+    white-space: nowrap;
+    transition: opacity 0.2s ease;
+
+    &:hover {
+      opacity: 0.6;
+    }
+  }
+
+  .shop {
+    @include at(1460, 116, 221, 43);
+    justify-content: flex-start;
+    gap: u(6);
+    padding-left: u(49);
+    @include text(20);
+
+    @include phone {
+      @include at(337, 97 - $phone-status-bar, 59, 20.5);
+      padding-left: u(7);
+      @include text(12);
+    }
+  }
+
+  .burger {
+    @include at(15, 58.5, 18, 12);
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+
+    @include phone {
+      display: flex;
+    }
+
+    span {
+      display: block;
+      height: 1px;
+      background: #3a3a3a;
+    }
+  }
+
+  .bag {
+    @include at(377, 163 - $phone-status-bar, 11, 16);
+    color: #333;
+
+    svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // Phone slide-out menu (Figma frame "iPhone 17 - 5").
+  .menu {
+    position: fixed;
+    inset: u(44) 0 0;
+    z-index: 50;
+
+    &[hidden] {
+      display: none;
+    }
+  }
+
+  .menu-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / 0.32);
+    animation: fade 0.25s ease;
+  }
+
+  .menu-panel {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: u(303);
+    padding: u(24) u(11);
+    background: #f7f4ee;
+    font-weight: 300;
+    @include text(12, 18);
+    animation: slide 0.3s ease;
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    ul + ul {
+      margin-top: u(23);
+    }
+
+    a,
+    button {
+      display: inline-block;
+      text-align: left;
+    }
+  }
+
+  .menu-login {
+    display: flex !important;
+    align-items: center;
+    gap: u(8);
+    width: u(97);
+    padding: 0 0 u(6);
+    margin-bottom: u(20);
+    border-bottom: 1px solid #555;
+
+    svg {
+      width: u(14);
+      height: u(14);
+    }
+  }
+
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slide {
+    from {
+      transform: translateX(-100%);
+    }
+  }
+</style>

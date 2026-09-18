@@ -1,0 +1,137 @@
+---
+// `x` = desktop column centre, `px`/`row` = phone grid position.
+const benefits = [
+  { icon: 'shipping', title: 'Complimentary Shipping', x: 249, px: 126, row: 0 },
+  { icon: 'returns', title: 'Free returns', x: 648.4, px: 293.5, row: 0 },
+  { icon: 'gifting', title: 'The Art of Gifting', x: 1031, px: 126, row: 1 },
+  { icon: 'support', title: 'Customer service', x: 1449.5, px: 293.5, row: 1 },
+];
+---
+
+<section class="benefits" aria-label="Why Pythal">
+  <div class="frame">
+    <ul>
+      {
+        benefits.map((b) => (
+          <li class:list={[b.row && 'row-2']} style={`--x:${b.x};--px:${b.px}`}>
+            <img src={`/images/benefit-${b.icon}.webp`} alt="" width="256" height="256" loading="lazy" decoding="async" />
+            <h3>{b.title}</h3>
+            <p>
+              {b.icon === 'shipping' && (
+                <>
+                  On orders of AED <br class="only-phone" />
+                  200+
+                </>
+              )}
+              {b.icon === 'returns' && (
+                <>
+                  within 7 <br class="only-phone" />
+                  days
+                </>
+              )}
+              {b.icon === 'gifting' && (
+                <>
+                  Customization
+                  <br />
+                  available
+                </>
+              )}
+              {b.icon === 'support' && (
+                <>
+                  <a class="mail" href="mailto:customersupport@pythal.com">
+                    customersupport@pyt<br class="only-phone" />hal.com
+                  </a>
+                  <br />
+                  <a href="tel:+971581032642">+971 581032642</a>
+                </>
+              )}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style lang="scss">
+  $top: 5993;
+  $p-top: 2291;
+
+  .benefits {
+    @include band($top, 299, $p-top, 339);
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    position: absolute;
+    left: calc((var(--x) - 200) * var(--u));
+    top: u(6100 - $top);
+    width: u(400);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    white-space: nowrap;
+
+    @include phone {
+      left: calc((var(--px) - 80) * var(--u));
+      top: u(2345 - 17.5 - $p-top);
+      width: u(160);
+
+      &.row-2 {
+        top: u(2491.6 - 17.5 - $p-top);
+      }
+    }
+  }
+
+  img {
+    width: u(103);
+    height: u(103);
+
+    @include phone {
+      width: u(35);
+      height: u(35);
+    }
+  }
+
+  h3 {
+    margin-top: u(6220 - 15 - 6100 - 103);
+    font-weight: 500;
+    @include text(18, 30);
+
+    @include phone {
+      margin-top: u(2383 - 8 - 2345 - 17.5);
+      @include text(10, 16);
+    }
+  }
+
+  p {
+    margin-top: u(6262 - 14 - 6235);
+    color: var(--taupe);
+    font-weight: 400;
+    @include text(18, 28);
+
+    @include phone {
+      margin-top: u(2414 - 7.25 - 2391);
+      @include text(10, 14.5);
+
+      .row-2 & {
+        margin-top: u(2550.8 - 7.25 - 2537.5);
+      }
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .mail {
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+</style>

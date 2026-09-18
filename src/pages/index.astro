@@ -1,0 +1,71 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import Hero from '../components/Hero.astro';
+import Bundles from '../components/Bundles.astro';
+import Giving from '../components/Giving.astro';
+import Fashion from '../components/Fashion.astro';
+import Safety from '../components/Safety.astro';
+import StoryBanner from '../components/StoryBanner.astro';
+import Benefits from '../components/Benefits.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import NewsletterPopup from '../components/NewsletterPopup.astro';
+import RegionDialog from '../components/RegionDialog.astro';
+---
+
+<Layout>
+  <div class="page">
+    <SiteHeader />
+    <main id="main">
+      <Hero />
+      <Bundles />
+      <Giving />
+      <Fashion />
+      <Safety />
+      <StoryBanner />
+      <Benefits />
+    </main>
+    <SiteFooter />
+    <NewsletterPopup />
+    <RegionDialog />
+  </div>
+</Layout>
+
+<script>
+  // Play background films only while they are on screen (saves battery and data).
+  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]');
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const { target, isIntersecting } of entries) {
+        const video = target as HTMLVideoElement;
+        if (isIntersecting && !reduceMotion) {
+          if (video.preload === 'none') video.preload = 'auto';
+          video.play().catch(() => {});
+        } else {
+          video.pause();
+        }
+      }
+    },
+    { rootMargin: '200px 0px' },
+  );
+
+  videos.forEach((video) => {
+    video.muted = true;
+    observer.observe(video);
+  });
+</script>
+
+<style lang="scss">
+  // Every band is positioned on the Figma frame, so the page is exactly the frame's height.
+  .page {
+    position: relative;
+    height: u(6824);
+    overflow-x: clip;
+
+    @include phone {
+      height: u(2876 - $phone-status-bar);
+    }
+  }
+</style>

@@ -1,0 +1,61 @@
+---
+import Arrow from './Arrow.astro';
+---
+
+<section class="story" aria-label="Enter our story">
+  <div class="frame">
+    <a class="button" href="#giving">
+      <span>ENTER OUR STORY</span>
+      <Arrow class="only-desktop story-arrow" length={68} />
+    </a>
+  </div>
+</section>
+
+<style lang="scss">
+  $top: 5720;
+  $p-top: 2242;
+
+  .story {
+    @include band($top, 273, $p-top, 49);
+    background: repeating-linear-gradient(90deg, var(--cream) 0 u(33.7), #fff u(33.7) u(54.6));
+    background-position-x: u(5);
+
+    @include phone {
+      background: repeating-linear-gradient(90deg, var(--cream) 0 u(10.6), #fff u(10.6) u(18.3));
+      background-position-x: u(2);
+    }
+  }
+
+  .button {
+    @include at(607.5, 5801 - $top, 499, 115);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: u(7.3);
+    padding-top: u(5857.7 - 20 - 5801);
+    background: var(--cream-deep);
+    font-weight: 400;
+    @include text(38, 40);
+    transition:
+      background-color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      background: #eadbc8;
+      transform: translateY(#{u(-3)});
+    }
+
+    @include phone {
+      @include at(158, 2258 - $p-top, 94, 22);
+      justify-content: center;
+      padding-top: 0;
+      @include text(8, 10);
+    }
+  }
+
+  :global(.story-arrow) {
+    width: u(68) !important;
+    height: u(8);
+  }
+</style>

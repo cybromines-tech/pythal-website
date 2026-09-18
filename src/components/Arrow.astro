@@ -1,0 +1,14 @@
+---
+// The long, thin "⟶" arrow used on the CTAs in the Figma file.
+interface Props {
+  class?: string;
+  /** Shaft length in design px; the head stays the same size. */
+  length?: number;
+}
+const { class: className, length = 33 } = Astro.props;
+const end = length - 1;
+---
+
+<svg class:list={['arrow', className]} viewBox={`0 0 ${length} 8`} fill="none" aria-hidden="true" focusable="false">
+  <path d={`M0 4h${end}M${end - 3.5} 1 ${end} 4l-3.5 3`} stroke="currentColor" stroke-width="1" vector-effect="non-scaling-stroke"></path>
+</svg>

@@ -1,0 +1,141 @@
+---
+import Arrow from './Arrow.astro';
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="frame">
+    <div class="video">
+      <video autoplay muted loop playsinline preload="metadata" poster="/images/hero-video-poster.jpg" data-autoplay>
+        <source src="/video/pythal-hero.mp4" type="video/mp4" />
+      </video>
+    </div>
+
+    <img
+      class="art"
+      src="/images/hero-art.webp"
+      alt=""
+      width="3456"
+      height="2064"
+      fetchpriority="high"
+      decoding="async"
+    />
+
+    <h1 class="title" id="hero-title">The First That Lasts</h1>
+
+    <p class="lede only-desktop">
+      One day, they’ll ask, “Was this really mine?”<br />
+      And you’ll smile, knowing you gave their beginning nothing less<br />
+      than your best.
+    </p>
+    <p class="lede only-phone">
+      You will forget the date. You will forget the weather.<br />
+      You will remember what they were wrapped in,<br />
+      the box it came in, and who carried it through the<br />
+      door.
+    </p>
+
+    <a class="cta cta-edition pill" href="#fashion">EXPLORE THE EDITION <Arrow class="only-desktop" /></a>
+    <a class="cta cta-gift pill" href="#bundles">FIND A GIFT <Arrow class="only-desktop" /></a>
+  </div>
+</section>
+
+<style lang="scss">
+  $top: 150;
+  $p-top: 130;
+
+  .hero {
+    @include band($top, 1054, $p-top, 430);
+    z-index: 3;
+  }
+
+  // Line-art arch, clouds and the sitting child, exported from Figma as one layer.
+  .art {
+    @include at(4, 10, 1743);
+    height: auto;
+    z-index: 2;
+    pointer-events: none;
+
+    @include phone {
+      @include at(-6, 308 - $p-top, 420.6);
+    }
+  }
+
+  // Campaign video sits behind the arch opening.
+  .video {
+    @include at(1054, 67.5, 538, 843);
+    z-index: 1;
+    overflow: hidden;
+    border-radius: u(269) u(269) 0 0;
+    background: #e8dfd0;
+
+    @include phone {
+      @include at(247.4, 322 - $p-top, 130, 210);
+      border-radius: u(65) u(65) 0 0;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .title {
+    @include at(48, 295 - $top + 9, 760);
+    z-index: 3;
+    font-family: var(--font-script);
+    font-weight: 400;
+    @include text(94, 150);
+    white-space: nowrap;
+
+    @include phone {
+      @include center-on(198, 145 - $p-top + 6, 402);
+      @include text(37.7, 60);
+    }
+  }
+
+  .lede {
+    @include at(58, 466 - $top, 720);
+    z-index: 3;
+    @include text(20, 30);
+    white-space: nowrap;
+
+    @include phone {
+      @include center-on(203, 226 - 10.5 - $p-top, 402);
+      @include text(14, 21);
+    }
+  }
+
+  .cta {
+    z-index: 3;
+    justify-content: flex-start;
+    gap: u(6);
+    @include text(20);
+
+    @include phone {
+      justify-content: center;
+      background: #f4f1ea;
+      @include text(13.5);
+    }
+  }
+
+  .cta-edition {
+    @include at(48, 585 - $top, 258, 44);
+    padding-left: u(17);
+
+    @include phone {
+      @include at(25, 330 - $p-top, 153, 26);
+      padding-left: 0;
+    }
+  }
+
+  .cta-gift {
+    @include at(338, 585 - $top, 182, 44);
+    padding-left: u(21);
+
+    @include phone {
+      @include at(26, 366 - $p-top, 152, 24);
+      padding-left: 0;
+    }
+  }
+</style>

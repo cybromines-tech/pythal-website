@@ -1,0 +1,270 @@
+---
+import Arrow from './Arrow.astro';
+
+// Six editions. `d` = desktop position, `p` = phone position (Figma frame px).
+const editions = [
+  { id: 'blue', name: 'Toile de Jouy', border: '#76add1', d: [-147.5, 254.5], p: [-11, 757] },
+  { id: 'brown', name: 'Sailor', border: '#a6896b', d: [104.5, 579.5], p: [42, 824] },
+  { id: 'pink', name: 'Little Unicorn', border: '#e49397', d: [484.5, 766.5], p: [119, 862] },
+  { id: 'gold', name: 'Under the Sea', border: '#ede2d0', d: [941.5, 766.5], p: [215, 862] },
+  { id: 'green', name: 'Retro Bunny', border: '#a5ab94', d: [1288.5, 579.5], p: [293, 824] },
+  { id: 'black', name: 'The First Flight', border: '#111', d: [1550.5, 254.5], p: [347, 757] },
+];
+const phoneTop = 560;
+---
+
+<section class="bundles" id="bundles" aria-labelledby="bundles-title" data-bundles>
+  <div class="frame">
+    <div class="preview" aria-hidden="true">
+      <img alt="" decoding="async" data-preview-img />
+    </div>
+
+    <svg class="arc only-desktop" viewBox="-8 1041 1744 790" fill="none" aria-hidden="true">
+      <path
+        d="M1736 1041.9C1735.67 1477.76 1345.39 1831 864 1831C382.609 1831 -7.67354 1477.76 -7.99902 1041.9"
+        stroke="#111"
+        vector-effect="non-scaling-stroke"></path>
+    </svg>
+    <svg class="arc only-phone" viewBox="0 0 424 247" fill="none" aria-hidden="true">
+      <path d="M0 0A212 247 0 0 0 424 0" stroke="#111" vector-effect="non-scaling-stroke"></path>
+    </svg>
+
+    <div class="copy">
+      <h2 id="bundles-title">
+        CHOOSE THE BUNDLE <br class="only-phone" />YOUR<br class="only-desktop" /> HEART FEELS FOR
+      </h2>
+      <hr />
+      <p class="only-desktop">
+        maybe it’s the color you love,<br />
+        maybe it’s something you always dreamed you’d see them wear,<br />
+        or maybe you just knew it was the one.<br />
+        Whatever it is, we hope it becomes a gift you’ll always treasure.
+      </p>
+      <p class="only-phone">
+        maybe it’s the color you love,<br />
+        maybe it’s something you always dreamed<br />
+        you’d see them wear,<br />
+        or maybe you just knew it was the one.<br />
+        Whatever it is, we hope it becomes a gift you’ll<br />
+        always treasure.
+      </p>
+      <button class="cta pill" type="button" data-region-open>CHOOSE YOUR PYTHAL <Arrow /></button>
+    </div>
+
+    <ul class="editions" aria-label="Pythal editions">
+      {
+        editions.map((e) => (
+          <li
+            style={`--dx:${e.d[0]};--dy:${e.d[1]};--px:${e.p[0]};--py:${e.p[1] - phoneTop};--ring:${e.border}`}
+          >
+            <button
+              type="button"
+              class="edition"
+              aria-label={`Preview the ${e.name} edition`}
+              aria-pressed="false"
+              data-edition={e.id}
+            >
+              <img src={`/images/circle-${e.id}.webp`} alt="" width="324" height="324" loading="lazy" decoding="async" />
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="visually-hidden" aria-live="polite" data-edition-status></p>
+  </div>
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-bundles]');
+  const img = root?.querySelector<HTMLImageElement>('[data-preview-img]');
+  const status = root?.querySelector<HTMLElement>('[data-edition-status]');
+  const buttons = [...(root?.querySelectorAll<HTMLButtonElement>('[data-edition]') ?? [])];
+  let pinned: HTMLButtonElement | null = null;
+
+  const show = (button: HTMLButtonElement | null) => {
+    if (!root || !img) return;
+    root.classList.toggle('is-previewing', Boolean(button));
+    buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+    if (!button) return;
+    const src = `/images/bundle-${button.dataset.edition}.webp`;
+    if (!img.src.endsWith(src)) img.src = src;
+    if (status) status.textContent = button.getAttribute('aria-label')?.replace('Preview the ', '') ?? '';
+  };
+
+  // Warm the cache so the first hover swaps instantly.
+  const preload = () => buttons.forEach((b) => (new Image().src = `/images/bundle-${b.dataset.edition}.webp`));
+  if (root) {
+    new IntersectionObserver((entries, observer) => {
+      if (entries.some((e) => e.isIntersecting)) {
+        preload();
+        observer.disconnect();
+      }
+    }, { rootMargin: '400px' }).observe(root);
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && show(button));
+    button.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && show(pinned));
+    button.addEventListener('focus', () => show(button));
+    button.addEventListener('blur', () => show(pinned));
+    button.addEventListener('click', () => {
+      pinned = pinned === button ? null : button;
+      show(pinned);
+    });
+  });
+</script>
+
+<style lang="scss">
+  $top: 1204;
+  $p-top: 560;
+
+  .bundles {
+    @include band($top, 1166, $p-top, 405);
+    z-index: 2;
+  }
+
+  .arc {
+    @include at(-8, 1041 - $top, 1744, 790);
+    overflow: visible;
+    pointer-events: none;
+
+    &.only-phone {
+      @include at(-11, 586.5 - $p-top, 424, 247);
+    }
+  }
+
+  // Hovering an edition fills the arch with its campaign photo (Figma "MacBook" frames).
+  .preview {
+    @include at(0, 0, 1728, 1831 - $top);
+    clip-path: ellipse(#{u(872)} #{u(789)} at #{u(864)} #{u(1041.9 - $top)});
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+
+    @include phone {
+      @include at(-11, 0, 424, 833.5 - $p-top);
+      clip-path: ellipse(#{u(212)} #{u(247)} at #{u(212)} #{u(586.5 - $p-top)});
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 50%;
+    }
+  }
+
+  .is-previewing {
+    .preview {
+      opacity: 1;
+    }
+
+    .copy {
+      opacity: 0;
+    }
+  }
+
+  .copy {
+    transition: opacity 0.25s ease;
+
+    h2 {
+      @include center-on(876.5, 1295 - $top - 14, 1100);
+      font-family: var(--font-display);
+      font-weight: 400;
+      @include text(58, 73);
+
+      @include phone {
+        @include center-on(201, 595.5 - 13.25 - $p-top, 402);
+        @include text(21.75, 26.5);
+      }
+    }
+
+    hr {
+      @include at(716, 1442 - $top, 320, 1);
+      margin: 0;
+      border: 0;
+      background: #2b2b2b;
+
+      @include phone {
+        @include at(137, 648 - $p-top, 134, 1);
+      }
+    }
+
+    p {
+      @include center-on(876.5, 1508 - 18 - $top, 1100);
+      color: var(--ink-soft);
+      @include text(24, 36);
+
+      @include phone {
+        @include center-on(201, 670 - 9 - $p-top, 402);
+        @include text(12, 18);
+      }
+    }
+  }
+
+  .cta {
+    @include at(743, 465, 266, 44);
+    justify-content: flex-start;
+    gap: u(6);
+    padding-left: u(16);
+    @include text(19);
+
+    @include phone {
+      display: none;
+    }
+  }
+
+  .editions {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      position: absolute;
+      left: calc(var(--dx) * var(--u));
+      top: calc(var(--dy) * var(--u));
+      width: u(324);
+      height: u(324);
+      z-index: 3;
+
+      @include phone {
+        left: calc(var(--px) * var(--u));
+        top: calc(var(--py) * var(--u));
+        width: u(68);
+        height: u(68);
+      }
+    }
+  }
+
+  .edition {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid var(--ring);
+    background: #fff;
+    overflow: hidden;
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    &:hover,
+    &[aria-pressed='true'] {
+      transform: translateY(#{u(-8)});
+      box-shadow: 0 u(16) u(34) rgb(55 40 28 / 0.1);
+    }
+
+    @include phone {
+      &:hover,
+      &[aria-pressed='true'] {
+        transform: translateY(#{u(-3)});
+        box-shadow: 0 u(6) u(12) rgb(55 40 28 / 0.12);
+      }
+    }
+  }
+</style>

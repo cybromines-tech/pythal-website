@@ -1,0 +1,81 @@
+// Figma → CSS helpers.
+//
+// The page is authored in the Figma frame's own pixel grid:
+//   desktop frame  "Desktop - 20"  1728 × 6824
+//   phone frame    "iPhone 17 - 4"  402 × 2876
+// `u(n)` turns a Figma pixel value into a length that scales with the viewport,
+// so the composition matches the design at every width.
+
+$desktop-w: 1728;
+$phone-w: 402;
+
+// The phone frame reserves 43px at the top for the iOS status bar. A real browser
+// viewport starts below it, so phone coordinates are shifted up by this amount.
+$phone-status-bar: 43;
+
+@function u($n) {
+  @return calc(#{$n} * var(--u));
+}
+
+@mixin phone {
+  @media (max-width: 767.98px) {
+    @content;
+  }
+}
+
+// Position an element on the Figma grid. `$x`/`$y` are relative to the parent frame.
+@mixin at($x, $y, $w: null, $h: null) {
+  position: absolute;
+  left: u($x);
+  top: u($y);
+  @if $w != null {
+    width: u($w);
+  }
+  @if $h != null {
+    height: u($h);
+  }
+}
+
+// A full-bleed band of the page. `$top`/`$h` are desktop frame coordinates,
+// `$p-top`/`$p-h` are phone frame coordinates (before the status-bar shift).
+// Children are laid out inside `.frame`, which is exactly one design-frame wide.
+@mixin band($top, $h, $p-top, $p-h) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: u($top);
+  height: u($h);
+
+  @include phone {
+    top: u(max($p-top - $phone-status-bar, 0));
+    height: u($p-h);
+  }
+
+  > .frame {
+    position: relative;
+    width: u($desktop-w);
+    height: 100%;
+    margin-inline: auto;
+
+    @include phone {
+      width: u($phone-w);
+    }
+  }
+}
+
+// Horizontally centre an element on `$cx` (useful for centred text measured from Figma).
+@mixin center-on($cx, $y, $w) {
+  position: absolute;
+  left: u($cx - $w * 0.5);
+  top: u($y);
+  width: u($w);
+  text-align: center;
+}
+
+// Figma text layers: font size and line height in design pixels.
+@mixin text($size, $line: null) {
+  font-size: u($size);
+  @if $line != null {
+    line-height: u($line);
+  }
+}
