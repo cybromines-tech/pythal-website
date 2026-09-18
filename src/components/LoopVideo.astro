@@ -1,6 +1,7 @@
 ---
-// Silent looping background film at the original resolution and quality. Files are
-// remuxed with the index at the start so playback begins before the download finishes.
+// Silent looping background film at full 720×1280 resolution. Desktop gets the untouched
+// original; phones get a lighter 25fps encode of the same resolution so it starts sooner on
+// mobile data. Both have the index at the start so playback begins while downloading.
 interface Props {
   name: string;
   label?: string;
@@ -21,5 +22,6 @@ const { name, label, eager = false } = Astro.props;
   aria-hidden={label ? undefined : 'true'}
   data-autoplay
 >
+  <source src={`/video/${name}-m.mp4`} type="video/mp4" media="(max-width: 767.98px)" />
   <source src={`/video/${name}.mp4`} type="video/mp4" />
 </video>

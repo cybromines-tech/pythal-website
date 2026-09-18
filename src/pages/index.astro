@@ -46,7 +46,6 @@ import RegionDialog from '../components/RegionDialog.astro';
         const video = target as HTMLVideoElement;
         if (isIntersecting) {
           visible.add(video);
-          if (video.preload === 'none') video.preload = 'auto';
           play(video);
         } else {
           visible.delete(video);
@@ -54,13 +53,28 @@ import RegionDialog from '../components/RegionDialog.astro';
         }
       }
     },
-    { rootMargin: '200px 0px' },
+    { rootMargin: '100px 0px' },
+  );
+
+  // Start downloading well before a film scrolls into view so it is ready to play.
+  const warm = new IntersectionObserver(
+    (entries) => {
+      for (const { target, isIntersecting } of entries) {
+        const video = target as HTMLVideoElement;
+        if (!isIntersecting || video.preload === 'auto') continue;
+        video.preload = 'auto';
+        video.load();
+        warm.unobserve(video);
+      }
+    },
+    { rootMargin: '1500px 0px' },
   );
 
   videos.forEach((video) => {
     video.muted = true;
     video.addEventListener('canplay', () => visible.has(video) && video.paused && play(video));
     observer.observe(video);
+    warm.observe(video);
   });
 
   // iOS Low Power Mode blocks autoplay until the first interaction; start anything on screen then.
