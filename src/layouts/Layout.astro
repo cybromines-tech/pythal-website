@@ -39,7 +39,14 @@ const ogImage = new URL('/images/hero-art.webp', Astro.site);
 
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="preload" href="/fonts/BrilliantSignature-Regular.woff" as="font" type="font/woff" crossorigin />
-    <link rel="preload" href="/images/hero-art.webp" as="image" type="image/webp" fetchpriority="high" />
+    <link
+      rel="preload"
+      as="image"
+      type="image/webp"
+      imagesrcset="/images/hero-art-1400.webp 1400w, /images/hero-art.webp 3456w"
+      imagesizes="(max-width: 767.98px) 420px, 100vw"
+      fetchpriority="high"
+    />
 
     <script
       type="application/ld+json"

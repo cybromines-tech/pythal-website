@@ -1,12 +1,13 @@
 // Asset pipeline: converts the original Figma exports into WebP under public/images at their
-// full original resolution. Line art (PNG sources) is lossless; photos are near-lossless.
+// full original resolution. Line art is near-lossless WebP; photos are high-quality lossy.
 // Usage: node scripts/optimize-assets.mjs <source-images-dir>
 import sharp from 'sharp';
 
 const src = (process.argv[2] ?? '../public_html/assets/images').replace(/\/?$/, '/');
 const out = 'public/images/';
 
-const lossless = { lossless: true, effort: 6 };
+// Near-lossless keeps line art pixel-identical to the eye at a fraction of the size.
+const lossless = { nearLossless: true, quality: 60, effort: 6 };
 const photo = { quality: 92, smartSubsample: true, effort: 6 };
 
 const jobs = [
@@ -14,7 +15,7 @@ const jobs = [
   ['footer-child.png', 'footer-child.webp', { quality: 94, alphaQuality: 100 }],
   ...['shipping', 'returns', 'gifting', 'support'].map((n) => [`benefit-${n}.png`, `benefit-${n}.webp`, lossless]),
   ...['pink', 'gold', 'brown', 'green', 'black', 'blue'].flatMap((c) => [
-    [`circle-${c}-exact.png`, `circle-${c}.webp`, lossless],
+    [`circle-${c}-exact.png`, `circle-${c}.webp`, { quality: 90, alphaQuality: 100 }],
     // Originals are 2731 × 4096 JPEGs; 2400px wide still exceeds the 1728px display width.
     [`bundle-hover-${c}-hq.jpg`, `bundle-${c}.webp`, photo, 2400],
   ]),
@@ -34,6 +35,12 @@ await sharp(src + 'hero-decor-hq.png')
   .extract({ left: 0, top: 0, width: 3456, height: 2064 })
   .webp(lossless)
   .toFile(`${out}hero-art.webp`);
+// Phones show the art ~420 CSS px wide; 1400px covers a 3x retina screen.
+await sharp(src + 'hero-decor-hq.png')
+  .extract({ left: 0, top: 0, width: 3456, height: 2064 })
+  .resize({ width: 1400 })
+  .webp(lossless)
+  .toFile(`${out}hero-art-1400.webp`);
 
 // Safety section: split the combined Figma export into six icons and the tree line.
 const safetyIcons = [[323, 463], [580, 708], [836, 938], [1061, 1197], [1305, 1444], [1536, 1687]];
