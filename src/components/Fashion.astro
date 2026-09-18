@@ -1,10 +1,12 @@
 ---
+import LoopVideo from './LoopVideo.astro';
+
 // Five stadium frames: the outer two bleed off the page edges on desktop.
 const frames = [
   { cls: 'edge-l' },
-  { cls: 'side-l', video: '/video/v4-web.mp4' },
-  { cls: 'center', video: '/video/v5-web.mp4' },
-  { cls: 'side-r', video: '/video/v6-web.mp4' },
+  { cls: 'side-l', video: 'v4-web' },
+  { cls: 'center', video: 'v5-web' },
+  { cls: 'side-r', video: 'v6-web' },
   { cls: 'edge-r' },
 ];
 ---
@@ -19,9 +21,7 @@ const frames = [
       frames.map((f) => (
         <div class:list={['look', f.cls]} aria-hidden={f.video ? undefined : 'true'}>
           {f.video && (
-            <video muted loop playsinline preload="none" data-autoplay aria-label="Pythal fashion film">
-              <source src={f.video} type="video/mp4" />
-            </video>
+            <LoopVideo name={f.video} label="Pythal fashion film" />
           )}
         </div>
       ))

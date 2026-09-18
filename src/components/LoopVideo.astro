@@ -1,0 +1,26 @@
+---
+// Silent looping background film. Phones get a lighter 480px encode; every file is
+// web-optimised (index at the start) so playback begins before the download finishes.
+interface Props {
+  name: string;
+  label?: string;
+  /** Above-the-fold videos start downloading immediately. */
+  eager?: boolean;
+}
+const { name, label, eager = false } = Astro.props;
+---
+
+<video
+  muted
+  loop
+  playsinline
+  autoplay={eager}
+  preload={eager ? 'auto' : 'none'}
+  poster={`/images/poster-${name}.webp`}
+  aria-label={label}
+  aria-hidden={label ? undefined : 'true'}
+  data-autoplay
+>
+  <source src={`/video/${name}-m.mp4`} type="video/mp4" media="(max-width: 767.98px)" />
+  <source src={`/video/${name}.mp4`} type="video/mp4" />
+</video>

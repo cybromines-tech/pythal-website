@@ -33,17 +33,23 @@ import RegionDialog from '../components/RegionDialog.astro';
 
 <script>
   // Play background films only while they are on screen (saves battery and data).
-  const videos = document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]');
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const videos = [...document.querySelectorAll<HTMLVideoElement>('video[data-autoplay]')];
+  const visible = new Set<HTMLVideoElement>();
+  const play = (video: HTMLVideoElement) => {
+    video.muted = true;
+    video.play().catch(() => {});
+  };
 
   const observer = new IntersectionObserver(
     (entries) => {
       for (const { target, isIntersecting } of entries) {
         const video = target as HTMLVideoElement;
-        if (isIntersecting && !reduceMotion) {
+        if (isIntersecting) {
+          visible.add(video);
           if (video.preload === 'none') video.preload = 'auto';
-          video.play().catch(() => {});
+          play(video);
         } else {
+          visible.delete(video);
           video.pause();
         }
       }
@@ -53,8 +59,16 @@ import RegionDialog from '../components/RegionDialog.astro';
 
   videos.forEach((video) => {
     video.muted = true;
+    video.addEventListener('canplay', () => visible.has(video) && video.paused && play(video));
     observer.observe(video);
   });
+
+  // iOS Low Power Mode blocks autoplay until the first interaction; start anything on screen then.
+  const resume = () => visible.forEach((video) => video.paused && play(video));
+  ['touchstart', 'pointerdown', 'scroll'].forEach((type) =>
+    addEventListener(type, resume, { passive: true, once: true }),
+  );
+  document.addEventListener('visibilitychange', () => !document.hidden && resume());
 </script>
 
 <style lang="scss">

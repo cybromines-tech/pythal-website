@@ -93,7 +93,8 @@ const phoneTop = 560;
 
   // Warm the cache so the first hover swaps instantly.
   const preload = () => buttons.forEach((b) => (new Image().src = `/images/bundle-${b.dataset.edition}.webp`));
-  if (root) {
+  // Only mouse users hover, so only they need the photos ahead of time.
+  if (root && matchMedia('(hover: hover)').matches) {
     new IntersectionObserver((entries, observer) => {
       if (entries.some((e) => e.isIntersecting)) {
         preload();

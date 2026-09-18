@@ -12,7 +12,7 @@ const jobs = [
   ...['shipping', 'returns', 'gifting', 'support'].map((n) => [`benefit-${n}.png`, `benefit-${n}.webp`, 256]),
   ...['pink', 'gold', 'brown', 'green', 'black', 'blue'].flatMap((c) => [
     [`circle-${c}-exact.png`, `circle-${c}.webp`, 648],
-    [`bundle-hover-${c}-hq.jpg`, `bundle-${c}.webp`, 2400],
+    [`bundle-hover-${c}-hq.jpg`, `bundle-${c}.webp`, 1800],
   ]),
 ];
 
@@ -29,6 +29,7 @@ await sharp(src + 'hero-decor-hq.png')
   .extract({ left: 0, top: 0, width: 3456, height: 2064 })
   .webp({ quality: 86, alphaQuality: 100 })
   .toFile(`${out}hero-art.webp`);
+await sharp(`${out}hero-art.webp`).resize({ width: 1300 }).webp({ quality: 82, alphaQuality: 90 }).toFile(`${out}hero-art-1300.webp`);
 
 // Safety section: split the combined Figma export into six icons and the tree line.
 const safetyIcons = [[323, 463], [580, 708], [836, 938], [1061, 1197], [1305, 1444], [1536, 1687]];
