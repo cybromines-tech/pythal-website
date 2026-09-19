@@ -1,14 +1,20 @@
 ---
 import LoopVideo from './LoopVideo.astro';
+import Arrow from './Arrow.astro';
 
-// Five stadium frames: the outer two bleed off the page edges on desktop.
-const frames = [
-  { cls: 'edge-l' },
-  { cls: 'side-l', video: 'v4-web' },
-  { cls: 'center', video: 'v5-web' },
-  { cls: 'side-r', video: 'v6-web' },
-  { cls: 'edge-r' },
-];
+// Films in the carousel; add more names here (public/video/<name>.mp4, <name>-m.mp4
+// and public/images/poster-<name>.webp). The one at `start` sits in the centre first.
+const videos = ['v4-web', 'v5-web', 'v6-web'];
+const start = 1;
+
+// Slot for a film `d` steps from the focused one; only three are on show.
+const slots: Record<string, string> = { '-1': 'side-l', '0': 'center', '1': 'side-r' };
+const offset = (i: number) => {
+  const n = videos.length;
+  let d = (((i - start) % n) + n) % n;
+  if (d > n / 2) d -= n;
+  return d;
+};
 ---
 
 <section class="fashion" id="fashion" aria-labelledby="fashion-title">
@@ -18,16 +24,86 @@ const frames = [
     <span class="rule rule-r" aria-hidden="true"></span>
 
     {
-      frames.map((f) => (
-        <div class:list={['look', f.cls]} aria-hidden={f.video ? undefined : 'true'}>
-          {f.video && (
-            <LoopVideo name={f.video} label="Pythal fashion film" />
-          )}
+      videos.map((name, i) => (
+        <div class:list={['look', 'slide', slots[offset(i)] ?? 'off']} data-slide={i}>
+          <LoopVideo name={name} label="Pythal fashion film" />
         </div>
       ))
     }
+
+    <button type="button" class="nav nav-prev" aria-label="Previous film" data-dir="-1"><Arrow length={40} /></button>
+    <button type="button" class="nav nav-next" aria-label="Next film" data-dir="1"><Arrow length={40} /></button>
   </div>
 </section>
+
+<script>
+  // Rotate the films through the slots: when the centre film finishes it hands focus to the
+  // next one, looping forever; the arrows (and tapping a side film) move focus by hand.
+  const SLOTS: Record<number, string> = { [-1]: 'side-l', 0: 'center', 1: 'side-r' };
+  const ALL = ['side-l', 'center', 'side-r', 'off'];
+
+  for (const root of document.querySelectorAll<HTMLElement>('.fashion')) {
+    const slides = [...root.querySelectorAll<HTMLElement>('.slide')];
+    const n = slides.length;
+    if (n < 2) continue;
+    let active = slides.findIndex((s) => s.classList.contains('center'));
+    const offsetOf = (i: number) => {
+      let d = (((i - active) % n) + n) % n;
+      if (d > n / 2) d -= n;
+      return d;
+    };
+
+    const render = (prev: number[]) => {
+      slides.forEach((slide, i) => {
+        const d = offsetOf(i);
+        const video = slide.querySelector('video')!;
+        // A film wrapping round from one end to the other jumps instead of sliding across.
+        slide.classList.toggle('jump', Math.abs(d - prev[i]) > 1);
+        slide.classList.remove(...ALL);
+        slide.classList.add(SLOTS[d] ?? 'off');
+        video.loop = d !== 0;
+        // The focused film starts from the top; one that just finished restarts and keeps
+        // looping on the side instead of sitting on its last (black) frame.
+        if (d === 0 || video.ended) video.currentTime = 0;
+        if (video.paused && root.dataset.visible) video.play().catch(() => {});
+      });
+    };
+
+    const go = (step: number) => {
+      const prev = slides.map((_, i) => offsetOf(i));
+      active = (active + step + n) % n;
+      render(prev);
+    };
+
+    slides.forEach((slide, i) => {
+      const video = slide.querySelector('video')!;
+      video.loop = offsetOf(i) !== 0;
+      video.addEventListener('ended', () => offsetOf(i) === 0 && go(1));
+      slide.addEventListener('click', () => {
+        const d = offsetOf(i);
+        if (d) go(d);
+      });
+    });
+
+    root.querySelectorAll<HTMLButtonElement>('.nav').forEach((btn) =>
+      btn.addEventListener('click', () => go(Number(btn.dataset.dir))),
+    );
+
+    // Left/right arrow keys move focus while the section is on screen.
+    document.addEventListener('keydown', (e) => {
+      if (!root.dataset.visible || e.altKey || e.ctrlKey || e.metaKey) return;
+      const t = e.target;
+      if (t instanceof Element && t.closest('input, textarea, select, [contenteditable]')) return;
+      if (e.key === 'ArrowLeft') go(-1);
+      else if (e.key === 'ArrowRight') go(1);
+    });
+
+    new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) root.dataset.visible = '1';
+      else delete root.dataset.visible;
+    }).observe(root);
+  }
+</script>
 
 <style lang="scss">
   $top: 3705;
@@ -81,8 +157,66 @@ const frames = [
     }
   }
 
-  .edge-l {
-    @include at(-406, 3971 - $top, 436, 638);
+  .slide {
+    z-index: 1;
+    cursor: pointer;
+    transition:
+      left 0.7s ease,
+      top 0.7s ease,
+      width 0.7s ease,
+      height 0.7s ease,
+      opacity 0.7s ease;
+
+    &.center {
+      cursor: default;
+    }
+
+    &.jump {
+      transition: none;
+    }
+
+    &.off {
+      opacity: 0;
+      pointer-events: none;
+      @include at(1706, 3971 - $top, 436, 638);
+
+      @include phone {
+        display: none;
+      }
+    }
+  }
+
+  .nav {
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+
+    :global(.arrow) {
+      width: 100%;
+    }
+  }
+
+  .nav-prev {
+    @include at(797, 1030, 40, 24);
+    transform: scaleX(-1);
+
+    @include phone {
+      @include at(170, 296, 24, 16);
+    }
+  }
+
+  .nav-next {
+    @include at(887, 1030, 40, 24);
+
+    @include phone {
+      @include at(210, 296, 24, 16);
+    }
   }
 
   .side-l {
@@ -106,17 +240,6 @@ const frames = [
 
     @include phone {
       @include at(312, 1555 - $p-top, 127, 184);
-    }
-  }
-
-  .edge-r {
-    @include at(1706, 3971 - $top, 436, 638);
-  }
-
-  .edge-l,
-  .edge-r {
-    @include phone {
-      display: none;
     }
   }
 </style>
