@@ -2,13 +2,14 @@
 import Arrow from './Arrow.astro';
 
 // Six editions. `d` = desktop position, `p` = phone position (Figma frame px).
+// `focus` = vertical crop (%) of the campaign photo, so the wide arch frames the babies.
 const editions = [
-  { id: 'blue', name: 'Toile de Jouy', border: '#76add1', d: [-147.5, 254.5], p: [-11, 757] },
-  { id: 'brown', name: 'Sailor', border: '#a6896b', d: [104.5, 579.5], p: [42, 824] },
-  { id: 'pink', name: 'Little Unicorn', border: '#e49397', d: [484.5, 766.5], p: [119, 862] },
-  { id: 'gold', name: 'Under the Sea', border: '#ede2d0', d: [941.5, 766.5], p: [215, 862] },
-  { id: 'green', name: 'Retro Bunny', border: '#a5ab94', d: [1288.5, 579.5], p: [293, 824] },
-  { id: 'black', name: 'The First Flight', border: '#111', d: [1550.5, 254.5], p: [347, 757] },
+  { id: 'blue', focus: 68, name: 'Toile de Jouy', border: '#76add1', d: [-147.5, 254.5], p: [-11, 757] },
+  { id: 'brown', focus: 51, name: 'Sailor', border: '#a6896b', d: [104.5, 579.5], p: [42, 824] },
+  { id: 'pink', focus: 58, name: 'Little Unicorn', border: '#e49397', d: [484.5, 766.5], p: [119, 862] },
+  { id: 'gold', focus: 63, name: 'Under the Sea', border: '#ede2d0', d: [941.5, 766.5], p: [215, 862] },
+  { id: 'green', focus: 60, name: 'Retro Bunny', border: '#a5ab94', d: [1288.5, 579.5], p: [293, 824] },
+  { id: 'black', focus: 63, name: 'The First Flight', border: '#111', d: [1550.5, 254.5], p: [347, 757] },
 ];
 const phoneTop = 560;
 ---
@@ -63,6 +64,7 @@ const phoneTop = 560;
               aria-label={`Preview the ${e.name} edition`}
               aria-pressed="false"
               data-edition={e.id}
+              data-focus={e.focus}
             >
               <img src={`/images/circle-${e.id}.webp`} alt="" width="324" height="324" loading="lazy" decoding="async" />
             </button>
@@ -88,6 +90,7 @@ const phoneTop = 560;
     if (!button) return;
     const src = `/images/bundle-${button.dataset.edition}.webp`;
     if (!img.src.endsWith(src)) img.src = src;
+    img.style.objectPosition = `center ${button.dataset.focus}%`;
     if (status) status.textContent = button.getAttribute('aria-label')?.replace('Preview the ', '') ?? '';
   };
 
