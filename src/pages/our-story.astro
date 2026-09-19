@@ -1,0 +1,369 @@
+---
+import Layout from '../layouts/Layout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import Heart from '../components/Heart.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import NewsletterPopup from '../components/NewsletterPopup.astro';
+import RegionDialog from '../components/RegionDialog.astro';
+---
+
+<Layout
+  title="Our Story — Pythal"
+  description="How Pythal began: one long afternoon, one gift for a new baby, and everything chosen together in one box."
+>
+  <div class="page">
+    <SiteHeader />
+    <main id="main" class="story-page">
+      <header class="intro">
+        <p class="eyebrow">OUR STORY</p>
+        <div class="title-row">
+          <span class="rule" aria-hidden="true"></span>
+          <h1>It began with one very long afternoon.</h1>
+          <span class="rule" aria-hidden="true"></span>
+        </div>
+      </header>
+
+      <section class="chapter">
+        <img
+          class="photo"
+          src="/images/newsletter-child.webp"
+          alt="A baby dressed in Pythal"
+          width="924"
+          height="1295"
+          loading="eager"
+          decoding="async"
+        />
+        <div class="copy">
+          <p>A mother, trying to put together a single good gift for a friend's new baby.</p>
+          <p>
+            She went from shop to shop. Something lovely in one. Something useful in another. A small wooden
+            something she was not certain went with either.
+          </p>
+          <p>
+            Nothing matched. Nothing came in anything worth opening. By the time it was wrapped it looked like three
+            separate gifts in one bag, and none of them said what she had wanted to say.
+          </p>
+        </div>
+      </section>
+
+      <blockquote class="quote">
+        <Heart class="quote-heart" />
+        <p>
+          Because that is the thing about giving to a new baby. You are not really buying an object. You are trying
+          to tell a family that you are glad they exist.
+        </p>
+      </blockquote>
+
+      <section class="chapter chapter-flip">
+        <img
+          class="photo"
+          src="/images/bundle-gold.webp"
+          alt="A Pythal gift bundle, everything chosen together in one box"
+          width="2400"
+          height="3600"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="copy">
+          <p>
+            So she made the thing she had spent the whole afternoon looking for. Everything chosen together.
+            Arriving in one box. Ready to be given — so that the next mother would not have to spend her Saturday
+            doing what she had just done.
+          </p>
+          <p class="began">That is how Pythal began.</p>
+        </div>
+      </section>
+
+      <section class="meaning" aria-label="The meaning of Pythal">
+        <p class="word">Pythal</p>
+        <p class="gloss">Pythal is Malayalam for baby.</p>
+        <p class="today">
+          Today we are a premium brand for childhood, for families across the world — and giving is still at the
+          heart of everything we make.
+        </p>
+        <p class="signoff">PYTHAL<small>MADE FOR THE LOVE WE LEAVE BEHIND.</small></p>
+      </section>
+
+      <img
+        class="art"
+        src="/images/giving-art.webp"
+        alt="Two hands offering the Pythal house gift box, tied with a ribbon that curls into a heart"
+        width="1493"
+        height="575"
+        loading="lazy"
+        decoding="async"
+      />
+    </main>
+    <div class="footer-slot">
+      <SiteFooter />
+    </div>
+    <NewsletterPopup />
+    <RegionDialog />
+  </div>
+</Layout>
+
+<style lang="scss">
+  // Unlike the home page this page flows top to bottom, but it keeps the same
+  // Figma pixel grid (`u()`), palette and typography.
+  .page {
+    position: relative;
+    overflow-x: clip;
+  }
+
+  .story-page {
+    padding-top: u(150);
+
+    @include phone {
+      padding-top: u(87);
+    }
+  }
+
+  // Poem-style body copy, as in The Art Of Giving.
+  .copy p,
+  .quote p,
+  .today,
+  .gloss,
+  .signoff {
+    color: #2d2926;
+    font-family: 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+  }
+
+  .intro {
+    padding: u(90) u(72) u(100);
+    background: var(--cream);
+    text-align: center;
+
+    @include phone {
+      padding: u(34) u(21) u(38);
+    }
+  }
+
+  .eyebrow {
+    font-weight: 500;
+    @include text(18);
+    letter-spacing: 0.12em;
+
+    @include phone {
+      @include text(11);
+    }
+  }
+
+  .title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: u(40);
+    margin-top: u(30);
+
+    @include phone {
+      gap: u(12);
+      margin-top: u(12);
+    }
+  }
+
+  .rule {
+    flex: 0 0 u(120);
+    height: 1px;
+    background: #6b5242;
+
+    @include phone {
+      display: none;
+    }
+  }
+
+  h1 {
+    max-width: u(900);
+    font-family: var(--font-script);
+    font-weight: 400;
+    @include text(69.5, 110);
+
+    @include phone {
+      max-width: u(300);
+      @include text(24, 40);
+    }
+  }
+
+  .chapter {
+    display: grid;
+    grid-template-columns: u(620) u(620);
+    justify-content: center;
+    align-items: center;
+    gap: u(120);
+    padding: u(140) u(72);
+
+    @include phone {
+      grid-template-columns: 1fr;
+      gap: u(28);
+      padding: u(44) u(21);
+    }
+  }
+
+  .chapter-flip .photo {
+    order: 2;
+
+    @include phone {
+      order: 0;
+    }
+  }
+
+  .photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .copy {
+    display: grid;
+    gap: u(26);
+
+    p {
+      @include text(20, 32);
+    }
+
+    @include phone {
+      gap: u(14);
+
+      p {
+        @include text(14, 21);
+      }
+    }
+  }
+
+  .began {
+    margin-top: u(16);
+    color: var(--ink) !important;
+    font-family: var(--font-display) !important;
+    @include text(34, 44);
+
+    @include phone {
+      margin-top: u(6);
+      @include text(20, 28);
+    }
+  }
+
+  .quote {
+    margin: 0;
+    padding: u(120) u(72);
+    background: var(--cream-deep);
+    text-align: center;
+
+    p {
+      max-width: u(900);
+      margin-inline: auto;
+      font-family: var(--font-display) !important;
+      color: var(--ink) !important;
+      @include text(38, 56);
+    }
+
+    @include phone {
+      padding: u(44) u(21);
+
+      p {
+        @include text(18, 27);
+      }
+    }
+  }
+
+  :global(.quote-heart) {
+    display: block;
+    width: u(34);
+    height: u(34);
+    margin: 0 auto u(36);
+    color: var(--heart);
+
+    @include phone {
+      width: u(22);
+      height: u(22);
+      margin-bottom: u(16);
+    }
+  }
+
+  .meaning {
+    padding: u(40) u(72) u(120);
+    text-align: center;
+
+    @include phone {
+      padding: u(10) u(21) u(44);
+    }
+  }
+
+  .word {
+    font-family: var(--font-script);
+    @include text(110, 150);
+
+    @include phone {
+      @include text(48, 70);
+    }
+  }
+
+  .gloss {
+    margin-top: u(8);
+    @include text(16, 23.4);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+
+    @include phone {
+      @include text(11, 16);
+    }
+  }
+
+  .today {
+    max-width: u(760);
+    margin: u(56) auto 0;
+    @include text(20, 32);
+
+    @include phone {
+      max-width: none;
+      margin-top: u(24);
+      @include text(14, 21);
+    }
+  }
+
+  .signoff {
+    margin-top: u(56);
+    @include text(14, 20.3);
+    letter-spacing: 0.02em;
+
+    small {
+      display: block;
+      margin-top: u(2.5);
+      @include text(11, 16);
+      letter-spacing: 0.06em;
+    }
+
+    @include phone {
+      margin-top: u(28);
+      @include text(12, 17);
+
+      small {
+        @include text(10, 14);
+      }
+    }
+  }
+
+  .art {
+    display: block;
+    width: u(1493);
+    height: auto;
+
+    @include phone {
+      width: u(402);
+    }
+  }
+
+  // The footer is positioned for the home page; here it sits in the flow instead.
+  .footer-slot {
+    position: relative;
+    height: u(532);
+
+    @include phone {
+      height: u(246);
+    }
+
+    :global(.footer) {
+      top: 0 !important;
+    }
+  }
+</style>

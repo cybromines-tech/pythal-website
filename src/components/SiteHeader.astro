@@ -2,10 +2,10 @@
 import Arrow from './Arrow.astro';
 
 const nav = [
-  { label: 'OUR STORY', menuLabel: 'Our Story', href: '#giving', x: 354 },
-  { label: 'COLLECTIONS', menuLabel: 'Collections', href: '#fashion', x: 633 },
-  { label: 'GIFTING', menuLabel: 'Gifting', href: '#giving', x: 940 },
-  { label: 'BUNDLES', menuLabel: 'Bundles', href: '#bundles', x: 1225 },
+  { label: 'OUR STORY', menuLabel: 'Our Story', href: '/our-story', x: 354 },
+  { label: 'COLLECTIONS', menuLabel: 'Collections', href: '/#fashion', x: 633 },
+  { label: 'GIFTING', menuLabel: 'Gifting', href: '/#giving', x: 940 },
+  { label: 'BUNDLES', menuLabel: 'Bundles', href: '/#bundles', x: 1225 },
 ];
 const shopUrl = 'https://pythal.ae/';
 ---
@@ -18,7 +18,7 @@ const shopUrl = 'https://pythal.ae/';
       <span></span><span></span><span></span>
     </button>
 
-    <a class="logo" href="#top" aria-label="Pythal home">
+    <a class="logo" href="/" aria-label="Pythal home">
       <img src="/images/logo.png" alt="Pythal" width="102" height="76" />
     </a>
 
@@ -54,7 +54,7 @@ const shopUrl = 'https://pythal.ae/';
         {nav.map((item) => <li><a href={item.href} data-menu-close>{item.menuLabel}</a></li>)}
       </ul>
       <ul>
-        <li><a href="#bundles" data-menu-close>Find a gift</a></li>
+        <li><a href="/#bundles" data-menu-close>Find a gift</a></li>
         <li><button type="button" data-region-open data-menu-close>Choose your Pythal</button></li>
       </ul>
     </nav>
