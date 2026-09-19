@@ -4,12 +4,12 @@ import Arrow from './Arrow.astro';
 // Six editions. `d` = desktop position, `p` = phone position (Figma frame px).
 // `focus` = vertical crop (%) of the campaign photo, so the wide arch frames the babies.
 const editions = [
-  { id: 'blue', focus: 68, name: 'Toile de Jouy', border: '#76add1', d: [-147.5, 254.5], p: [-11, 757] },
-  { id: 'brown', focus: 51, name: 'Sailor', border: '#a6896b', d: [104.5, 579.5], p: [42, 824] },
-  { id: 'pink', focus: 58, name: 'Little Unicorn', border: '#e49397', d: [484.5, 766.5], p: [119, 862] },
-  { id: 'gold', focus: 63, name: 'Under the Sea', border: '#ede2d0', d: [941.5, 766.5], p: [215, 862] },
-  { id: 'green', focus: 60, name: 'Retro Bunny', border: '#a5ab94', d: [1288.5, 579.5], p: [293, 824] },
-  { id: 'black', focus: 63, name: 'The First Flight', border: '#111', d: [1550.5, 254.5], p: [347, 757] },
+  { id: 'blue', focus: 57, name: 'Toile de Jouy', border: '#76add1', d: [-147.5, 404.5], p: [-11, 757] },
+  { id: 'brown', focus: 57, name: 'Sailor', border: '#a6896b', d: [104.5, 729.5], p: [42, 824] },
+  { id: 'pink', focus: 57, name: 'Little Unicorn', border: '#e49397', d: [484.5, 916.5], p: [119, 862] },
+  { id: 'gold', focus: 50, name: 'Under the Sea', border: '#ede2d0', d: [941.5, 916.5], p: [215, 862] },
+  { id: 'green', focus: 57, name: 'Retro Bunny', border: '#a5ab94', d: [1288.5, 729.5], p: [293, 824] },
+  { id: 'black', focus: 57, name: 'The First Flight', border: '#111', d: [1550.5, 404.5], p: [347, 757] },
 ];
 const phoneTop = 560;
 ---
@@ -20,9 +20,9 @@ const phoneTop = 560;
       <img alt="" decoding="async" data-preview-img />
     </div>
 
-    <svg class="arc only-desktop" viewBox="-8 1041 1744 790" fill="none" aria-hidden="true">
+    <svg class="arc only-desktop" viewBox="-8 1041 1744 940" fill="none" aria-hidden="true">
       <path
-        d="M1736 1041.9C1735.67 1477.76 1345.39 1831 864 1831C382.609 1831 -7.67354 1477.76 -7.99902 1041.9"
+        d="M1736 1041.9C1735.67 1560.6 1345.39 1981 864 1981C382.609 1981 -7.67354 1560.6 -7.99902 1041.9"
         stroke="#111"
         vector-effect="non-scaling-stroke"></path>
     </svg>
@@ -121,14 +121,16 @@ const phoneTop = 560;
 <style lang="scss">
   $top: 1204;
   $p-top: 560;
+  // Pushes the desktop copy down into the deeper arch.
+  $copy-drop: 90;
 
   .bundles {
-    @include band($top, 1166, $p-top, 405);
+    @include band($top, 1316, $p-top, 405);
     z-index: 2;
   }
 
   .arc {
-    @include at(-8, 1041 - $top, 1744, 790);
+    @include at(-8, 1041 - $top, 1744, 940);
     overflow: visible;
     pointer-events: none;
 
@@ -139,8 +141,8 @@ const phoneTop = 560;
 
   // Hovering an edition fills the arch with its campaign photo (Figma "MacBook" frames).
   .preview {
-    @include at(0, 0, 1728, 1831 - $top);
-    clip-path: ellipse(#{u(872)} #{u(789)} at #{u(864)} #{u(1041.9 - $top)});
+    @include at(0, 0, 1728, 1981 - $top);
+    clip-path: ellipse(#{u(872)} #{u(939)} at #{u(864)} #{u(1041.9 - $top)});
     opacity: 0;
     transition: opacity 0.35s ease;
     pointer-events: none;
@@ -172,7 +174,7 @@ const phoneTop = 560;
     transition: opacity 0.25s ease;
 
     h2 {
-      @include center-on(876.5, 1295 - $top - 14, 1100);
+      @include center-on(876.5, 1295 - $top - 14 + $copy-drop, 1100);
       font-family: var(--font-display);
       font-weight: 400;
       @include text(58, 73);
@@ -184,7 +186,7 @@ const phoneTop = 560;
     }
 
     hr {
-      @include at(716, 1442 - $top, 320, 1);
+      @include at(716, 1442 - $top + $copy-drop, 320, 1);
       margin: 0;
       border: 0;
       background: #2b2b2b;
@@ -195,7 +197,7 @@ const phoneTop = 560;
     }
 
     p {
-      @include center-on(876.5, 1508 - 18 - $top, 1100);
+      @include center-on(876.5, 1508 - 18 - $top + $copy-drop, 1100);
       color: var(--ink-soft);
       @include text(24, 36);
 
@@ -207,7 +209,7 @@ const phoneTop = 560;
   }
 
   .cta {
-    @include at(743, 465, 266, 44);
+    @include at(743, 465 + $copy-drop, 266, 44);
     justify-content: flex-start;
     gap: u(6);
     padding-left: u(16);

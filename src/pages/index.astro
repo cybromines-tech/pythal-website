@@ -89,7 +89,7 @@ import RegionDialog from '../components/RegionDialog.astro';
   // Every band is positioned on the Figma frame, so the page is exactly the frame's height.
   .page {
     position: relative;
-    height: u(6824);
+    height: u(6824 + $bundles-extra);
     overflow-x: clip;
 
     @include phone {

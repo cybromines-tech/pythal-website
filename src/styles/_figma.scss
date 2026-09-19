@@ -12,6 +12,8 @@ $phone-w: 402;
 // The phone frame reserves 43px at the top for the iOS status bar. A real browser
 // viewport starts below it, so phone coordinates are shifted up by this amount.
 $phone-status-bar: 43;
+// Extra depth added to the bundles arch; every desktop band below it shifts down by this much.
+$bundles-extra: 150;
 
 @function u($n) {
   @return calc(#{$n} * var(--u));
