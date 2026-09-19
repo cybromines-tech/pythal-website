@@ -21,7 +21,7 @@ import Heart from './Heart.astro';
       a memory to find<br />
       along the way.
     </p>
-    <p class="signoff">PYTHAL<br />MADE FOR THE LOVE WE LEAVE BEHIND.</p>
+    <p class="signoff">PYTHAL<small>MADE FOR THE LOVE WE LEAVE BEHIND.</small></p>
 
     <img
       class="art"
@@ -59,7 +59,7 @@ import Heart from './Heart.astro';
 
   .rule {
     height: 1px;
-    background: var(--rule);
+    background: #6b5242;
   }
 
   .rule-l {
@@ -78,51 +78,67 @@ import Heart from './Heart.astro';
     }
   }
 
+  // The old pythal.com set this poem in Avenir Next at 16px.
   .verse,
   .signoff {
-    color: var(--ink-soft);
+    color: #2d2926;
+    font-family: 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
   }
 
   .verse {
-    @include text(32, 48);
+    @include text(16, 23.4);
 
     @include phone {
-      @include text(12, 18);
+      @include text(12, 17.4);
     }
   }
 
   .verse-1 {
-    @include center-on(855, 2538 - 24 - $top, 900);
+    @include center-on(855, 2531 - 11.7 - $top, 900);
 
     @include phone {
-      @include center-on(210.5, 1043 - 9 - $p-top, 402);
+      @include center-on(210.5, 1052.6 - 8.7 - $p-top, 402);
     }
   }
 
   .verse-2 {
-    @include center-on(855, 2824 - 24 - $top, 900);
+    @include center-on(855, 2712 - 11.7 - $top, 900);
 
     @include phone {
-      @include center-on(210.5, 1150 - 9 - $p-top, 402);
+      @include center-on(210.5, 1171.2 - 8.7 - $p-top, 402);
     }
   }
 
   :global(.heart) {
-    @include at(855 - 20.5, 2752 - 20.5 - $top, 41, 41);
+    @include at(855 - 17, 2658 - 17 - $top, 34, 34);
     color: var(--heart);
 
     @include phone {
-      @include at(210.5 - 7, 1123 - 7 - $p-top, 14, 14);
+      @include at(210.5 - 11, 1138.7 - 11 - $p-top, 22, 22);
     }
   }
 
   .signoff {
-    @include center-on(855.5, 3111 - 25.5 - $top, 1000);
-    @include text(32, 51);
+    @include center-on(855.5, 2850 - 10.15 - $top, 1000);
+    @include text(14, 20.3);
+    letter-spacing: 0.02em;
+
+    small {
+      display: block;
+      margin-top: u(2.5);
+      @include text(11, 16);
+      letter-spacing: 0.06em;
+
+      @include phone {
+        margin-top: u(1.5);
+        @include text(8.5, 12);
+      }
+    }
 
     @include phone {
-      @include center-on(211, 1259 - 9 - $p-top, 402);
-      @include text(12, 18);
+      @include center-on(211, 1264.2 - 7.5 - $p-top, 402);
+      @include text(10.5, 15);
     }
   }
 
@@ -130,7 +146,7 @@ import Heart from './Heart.astro';
     @include at(0, 3133 - $top, 1493, 575);
 
     @include phone {
-      @include at(0, 1294 - $p-top, 402, 154.8);
+      @include at(0, 1300 - $p-top, 402, 154.8);
     }
   }
 </style>
