@@ -14,6 +14,7 @@ $phone-w: 402;
 $phone-status-bar: 43;
 // Extra depth added to the bundles arch; every desktop band below it shifts down by this much.
 $bundles-extra: 150;
+$bundles-extra-phone: 80;
 
 @function u($n) {
   @return calc(#{$n} * var(--u));

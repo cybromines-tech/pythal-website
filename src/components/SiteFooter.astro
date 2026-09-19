@@ -109,7 +109,7 @@ const top = 6292;
   $p-top: 2630;
 
   .footer {
-    @include band($top + $bundles-extra, 532, $p-top, 246);
+    @include band($top + $bundles-extra, 532, $p-top + $bundles-extra-phone, 246);
     overflow: hidden;
     // Footer typography follows the approved live design (Avenir Next).
     font-family: 'Avenir Next', Avenir, 'Nunito Sans', 'Helvetica Neue', Arial, sans-serif;

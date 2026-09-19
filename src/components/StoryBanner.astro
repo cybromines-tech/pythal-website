@@ -16,7 +16,7 @@ import Arrow from './Arrow.astro';
   $p-top: 2242;
 
   .story {
-    @include band($top + $bundles-extra, 273, $p-top, 49);
+    @include band($top + $bundles-extra, 273, $p-top + $bundles-extra-phone, 49);
     background: repeating-linear-gradient(90deg, var(--cream) 0 u(33.7), #fff u(33.7) u(54.6));
     background-position-x: u(5);
 

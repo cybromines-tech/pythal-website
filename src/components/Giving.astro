@@ -40,7 +40,7 @@ import Heart from './Heart.astro';
   $p-top: 965;
 
   .giving {
-    @include band($top + $bundles-extra, 1335, $p-top, 505);
+    @include band($top + $bundles-extra, 1335, $p-top + $bundles-extra-phone, 505);
     z-index: 1;
   }
 

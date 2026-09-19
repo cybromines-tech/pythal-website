@@ -93,7 +93,7 @@ import RegionDialog from '../components/RegionDialog.astro';
     overflow-x: clip;
 
     @include phone {
-      height: u(2876 - $phone-status-bar);
+      height: u(2876 + $bundles-extra-phone - $phone-status-bar);
     }
   }
 </style>

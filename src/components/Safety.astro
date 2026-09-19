@@ -49,7 +49,7 @@ const checks = [
   $p-top: 1790;
 
   .safety {
-    @include band($top + $bundles-extra, 895, $p-top, 452);
+    @include band($top + $bundles-extra, 895, $p-top + $bundles-extra-phone, 452);
   }
 
   h2 {
