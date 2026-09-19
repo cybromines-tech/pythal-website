@@ -126,8 +126,13 @@ const phoneTop = 560;
   $p-copy-drop: 48;
 
   .bundles {
-    @include band($top, 1316, $p-top, 405 + $bundles-extra-phone);
+    @include band($top + $bundles-gap, 1316, $p-top + $bundles-gap-phone, 405 + $bundles-extra-phone - $bundles-gap-phone);
     z-index: 2;
+
+    // The arch starts above the band; clip it at the band's top edge so the gap above stays empty.
+    > .frame {
+      clip-path: inset(0 -100vw -100vw -100vw);
+    }
   }
 
   .arc {
