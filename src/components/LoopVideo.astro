@@ -7,8 +7,10 @@ interface Props {
   label?: string;
   /** Above-the-fold videos start downloading immediately. */
   eager?: boolean;
+  /** Films whose owner decides when to download and play them, e.g. the fashion carousel. */
+  managed?: boolean;
 }
-const { name, label, eager = false } = Astro.props;
+const { name, label, eager = false, managed = false } = Astro.props;
 ---
 
 <video
@@ -20,7 +22,7 @@ const { name, label, eager = false } = Astro.props;
   poster={`/images/poster-${name}.webp`}
   aria-label={label}
   aria-hidden={label ? undefined : 'true'}
-  data-autoplay
+  data-autoplay={managed ? undefined : true}
 >
   <source src={`/video/${name}-m.mp4`} type="video/mp4" media="(max-width: 767.98px)" />
   <source src={`/video/${name}.mp4`} type="video/mp4" />

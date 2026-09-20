@@ -25,8 +25,12 @@ const offset = (i: number) => {
 
     {
       videos.map((name, i) => (
-        <div class:list={['look', 'slide', slots[offset(i)] ?? 'off']} data-slide={i}>
-          <LoopVideo name={name} label="Pythal fashion film" />
+        <div
+          class:list={['look', 'slide', slots[offset(i)] ?? 'off']}
+          data-slide={i}
+          style={`background-image:url(/images/poster-${name}.webp)`}
+        >
+          <LoopVideo name={name} label="Pythal fashion film" managed />
         </div>
       ))
     }
@@ -43,6 +47,11 @@ const offset = (i: number) => {
   const SLOTS: Record<number, string> = { [-1]: 'side-l', 0: 'center', 1: 'side-r' };
   const ALL = ['side-l', 'center', 'side-r', 'off'];
   const FOCUS_MS = 10000;
+  // A film within this many steps of the focused one downloads ahead of its turn, so on a slow
+  // line it is already buffered when the rotation reaches it.
+  const WARM = 2;
+  // readyState >= HAVE_FUTURE_DATA: enough buffered to seek and play without blanking.
+  const READY = 3;
 
   for (const root of document.querySelectorAll<HTMLElement>('.fashion')) {
     const slides = [...root.querySelectorAll<HTMLElement>('.slide')];
@@ -61,7 +70,7 @@ const offset = (i: number) => {
     let held = false;
     const arm = () => {
       clearTimeout(timer);
-      if (root.dataset.visible && !held) timer = setTimeout(() => go(1), FOCUS_MS);
+      if (root.dataset.visible && !held) timer = setTimeout(advance, FOCUS_MS);
     };
 
     const render = (prev: number[]) => {
@@ -73,10 +82,30 @@ const offset = (i: number) => {
         slide.classList.remove(...ALL);
         slide.classList.add(SLOTS[d] ?? 'off');
         video.loop = true;
-        // The focused film starts from the top so each turn opens on the same frame.
-        if (d === 0 || video.ended) video.currentTime = 0;
-        if (video.paused && root.dataset.visible) video.play().catch(() => {});
+        // The films on show and the next couple in line fetch themselves; the rest stay idle.
+        const warm = Math.abs(d) <= WARM;
+        if (warm && video.preload !== 'auto') {
+          video.preload = 'auto';
+          video.load();
+        }
+        // The focused film starts from the top so each turn opens on the same frame — but only
+        // once it can play, since seeking a half-loaded film blanks it.
+        if ((d === 0 || video.ended) && video.readyState >= READY) video.currentTime = 0;
+        if (warm && video.paused && root.dataset.visible) video.play().catch(() => {});
+        else if (!warm && !video.paused) video.pause();
       });
+    };
+
+    // Hand focus on, unless the film taking over has nothing buffered yet: then wait for it
+    // rather than slide a black oval into the centre.
+    const advance = () => {
+      const next = slides[(active + 1) % n];
+      const video = next.querySelector('video')!;
+      if (video.readyState >= READY) return go(1);
+      video.addEventListener('canplay', () => offsetOf(slides.indexOf(next)) === 1 && go(1), {
+        once: true,
+      });
+      video.preload = 'auto';
     };
 
     const go = (step: number) => {
@@ -89,6 +118,13 @@ const offset = (i: number) => {
     slides.forEach((slide, i) => {
       const video = slide.querySelector('video')!;
       video.loop = true;
+      // The `poster` attribute only covers the very first play, so the still sits behind the
+      // film as a background and the film fades over it once it actually has pictures.
+      const shown = (on: boolean) => slide.classList.toggle('playing', on);
+      video.addEventListener('playing', () => shown(true));
+      for (const e of ['waiting', 'stalled', 'emptied', 'seeking']) {
+        video.addEventListener(e, () => shown(false));
+      }
       slide.addEventListener('click', () => {
         const d = offsetOf(i);
         if (d) go(d);
@@ -121,12 +157,38 @@ const offset = (i: number) => {
       else if (e.key === 'ArrowRight') go(1);
     });
 
-    // The ten seconds only run while the section is on screen.
-    new IntersectionObserver(([e]) => {
-      if (e.isIntersecting) root.dataset.visible = '1';
-      else delete root.dataset.visible;
-      arm();
-    }).observe(root);
+    // The ten seconds — and the films themselves — only run while the section is on screen.
+    new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) root.dataset.visible = '1';
+        else delete root.dataset.visible;
+        slides.forEach((slide, i) => {
+          const video = slide.querySelector('video')!;
+          if (Math.abs(offsetOf(i)) > WARM) return;
+          if (!e.isIntersecting) video.pause();
+          else if (video.paused) {
+            video.muted = true;
+            if (video.preload !== 'auto') {
+              video.preload = 'auto';
+              video.load();
+            }
+            video.play().catch(() => {});
+          }
+        });
+        arm();
+      },
+      { rootMargin: '300px 0px' },
+    ).observe(root);
+
+    // A film that only finishes buffering later still starts on its own.
+    slides.forEach((slide, i) => {
+      const video = slide.querySelector('video')!;
+      video.addEventListener('canplay', () => {
+        if (root.dataset.visible && video.paused && Math.abs(offsetOf(i)) <= WARM) {
+          video.play().catch(() => {});
+        }
+      });
+    });
   }
 </script>
 
@@ -173,12 +235,19 @@ const offset = (i: number) => {
   .look {
     overflow: hidden;
     border-radius: 999px;
-    background: var(--placeholder);
+    background: var(--placeholder) center / cover no-repeat;
 
     :global(video) {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    // Until the film has frames to show, the poster still behind it stands in for it.
+    &.playing :global(video) {
+      opacity: 1;
     }
   }
 
