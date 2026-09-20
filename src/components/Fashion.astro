@@ -37,10 +37,12 @@ const offset = (i: number) => {
 </section>
 
 <script>
-  // Rotate the films through the slots: when the centre film finishes it hands focus to the
-  // next one, looping forever; the arrows (and tapping a side film) move focus by hand.
+  // Rotate the films through the slots: the centre film holds focus for ten seconds, then
+  // hands it to the next one, looping forever; the arrows (and tapping a side film) move
+  // focus by hand and start the ten seconds again.
   const SLOTS: Record<number, string> = { [-1]: 'side-l', 0: 'center', 1: 'side-r' };
   const ALL = ['side-l', 'center', 'side-r', 'off'];
+  const FOCUS_MS = 10000;
 
   for (const root of document.querySelectorAll<HTMLElement>('.fashion')) {
     const slides = [...root.querySelectorAll<HTMLElement>('.slide')];
@@ -53,6 +55,13 @@ const offset = (i: number) => {
       return d;
     };
 
+    // Every film loops, so a clip shorter than ten seconds keeps playing until its turn is up.
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const arm = () => {
+      clearTimeout(timer);
+      if (root.dataset.visible) timer = setTimeout(() => go(1), FOCUS_MS);
+    };
+
     const render = (prev: number[]) => {
       slides.forEach((slide, i) => {
         const d = offsetOf(i);
@@ -61,9 +70,8 @@ const offset = (i: number) => {
         slide.classList.toggle('jump', Math.abs(d - prev[i]) > 1);
         slide.classList.remove(...ALL);
         slide.classList.add(SLOTS[d] ?? 'off');
-        video.loop = d !== 0;
-        // The focused film starts from the top; one that just finished restarts and keeps
-        // looping on the side instead of sitting on its last (black) frame.
+        video.loop = true;
+        // The focused film starts from the top so each turn opens on the same frame.
         if (d === 0 || video.ended) video.currentTime = 0;
         if (video.paused && root.dataset.visible) video.play().catch(() => {});
       });
@@ -73,12 +81,12 @@ const offset = (i: number) => {
       const prev = slides.map((_, i) => offsetOf(i));
       active = (active + step + n) % n;
       render(prev);
+      arm();
     };
 
     slides.forEach((slide, i) => {
       const video = slide.querySelector('video')!;
-      video.loop = offsetOf(i) !== 0;
-      video.addEventListener('ended', () => offsetOf(i) === 0 && go(1));
+      video.loop = true;
       slide.addEventListener('click', () => {
         const d = offsetOf(i);
         if (d) go(d);
@@ -98,9 +106,11 @@ const offset = (i: number) => {
       else if (e.key === 'ArrowRight') go(1);
     });
 
+    // The ten seconds only run while the section is on screen.
     new IntersectionObserver(([e]) => {
       if (e.isIntersecting) root.dataset.visible = '1';
       else delete root.dataset.visible;
+      arm();
     }).observe(root);
   }
 </script>
