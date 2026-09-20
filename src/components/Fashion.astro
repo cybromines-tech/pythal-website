@@ -56,10 +56,12 @@ const offset = (i: number) => {
     };
 
     // Every film loops, so a clip shorter than ten seconds keeps playing until its turn is up.
+    // Hovering holds the rotation so the film under the pointer plays right through.
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let held = false;
     const arm = () => {
       clearTimeout(timer);
-      if (root.dataset.visible) timer = setTimeout(() => go(1), FOCUS_MS);
+      if (root.dataset.visible && !held) timer = setTimeout(() => go(1), FOCUS_MS);
     };
 
     const render = (prev: number[]) => {
@@ -90,6 +92,19 @@ const offset = (i: number) => {
       slide.addEventListener('click', () => {
         const d = offsetOf(i);
         if (d) go(d);
+      });
+      // Pointing at a film brings it to the centre and keeps it there until the pointer leaves.
+      slide.addEventListener('pointerenter', (e) => {
+        if (e.pointerType === 'touch') return;
+        held = true;
+        const d = offsetOf(i);
+        if (d) go(d);
+        else arm();
+      });
+      slide.addEventListener('pointerleave', (e) => {
+        if (e.pointerType === 'touch') return;
+        held = false;
+        arm();
       });
     });
 
