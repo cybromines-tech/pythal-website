@@ -129,13 +129,17 @@ const offset = (i: number) => {
         const d = offsetOf(i);
         if (d) go(d);
       });
-      // Pointing at a film brings it to the centre and keeps it there until the pointer leaves.
+      // Pointing at a film holds the rotation where it is — nothing slides — and the film under
+      // the pointer plays right through until the pointer leaves.
       slide.addEventListener('pointerenter', (e) => {
         if (e.pointerType === 'touch') return;
         held = true;
-        const d = offsetOf(i);
-        if (d) go(d);
-        else arm();
+        clearTimeout(timer);
+        if (video.preload !== 'auto') {
+          video.preload = 'auto';
+          video.load();
+        }
+        if (video.paused) video.play().catch(() => {});
       });
       slide.addEventListener('pointerleave', (e) => {
         if (e.pointerType === 'touch') return;
