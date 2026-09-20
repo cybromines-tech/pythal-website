@@ -8,6 +8,7 @@ const nav = [
   { label: 'BUNDLES', menuLabel: 'Bundles', href: '/#bundles', x: 1225 },
 ];
 const shopUrl = 'https://pythal.ae/';
+// The header pill opens the support dialog rather than the store.
 ---
 
 <header class="site-header" id="top">
@@ -26,10 +27,10 @@ const shopUrl = 'https://pythal.ae/';
       {nav.map((item) => <a href={item.href} style={`--x:${item.x}`}>{item.label}</a>)}
     </nav>
 
-    <a class="shop pill" href={shopUrl} target="_blank" rel="noopener">
-      <span class="only-desktop">SHOP PYTHAL</span><span class="only-phone">SHOP</span>
+    <button class="shop pill" type="button" data-support-open>
+      <span>SUPPORT</span>
       <Arrow class="only-desktop" />
-    </a>
+    </button>
 
     <a class="bag only-phone" href={shopUrl} target="_blank" rel="noopener" aria-label="Shopping bag">
       <svg viewBox="0 0 11 16" fill="none" aria-hidden="true">
@@ -140,14 +141,12 @@ const shopUrl = 'https://pythal.ae/';
 
   .shop {
     @include at(1460, 87, 221, 43);
-    justify-content: flex-start;
     gap: u(6);
-    padding-left: u(49);
     @include text(20);
 
     @include phone {
-      @include at(337, 97 - $phone-status-bar, 59, 20.5);
-      padding-left: u(7);
+      // Wider than the old "SHOP" pill so the longer word sits inside it.
+      @include at(325, 97 - $phone-status-bar, 71, 20.5);
       @include text(12);
     }
   }

@@ -1,0 +1,88 @@
+---
+// Opened by the header SUPPORT pill; shows how to reach customer service without
+// handing the visitor straight to their mail application.
+const email = 'customersupport@pythal.com';
+const phone = '+971 581032642';
+---
+
+<dialog class="support" aria-labelledby="support-title" data-support>
+  <button class="close" type="button" aria-label="Close" data-support-close>×</button>
+  <h2 id="support-title">Support</h2>
+  <p>We would love to hear from you.</p>
+  <a class="mail" href={`mailto:${email}`}>{email}</a>
+  <a class="tel" href={`tel:${phone.replace(/\s/g, '')}`}>{phone}</a>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-support]');
+  document.querySelectorAll('[data-support-open]').forEach((el) =>
+    el.addEventListener('click', () => {
+      document.querySelectorAll<HTMLDialogElement>('dialog[open]').forEach((d) => d.close());
+      dialog?.showModal();
+    }),
+  );
+  dialog?.querySelector('[data-support-close]')?.addEventListener('click', () => dialog.close());
+  dialog?.addEventListener('click', (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+</script>
+
+<style lang="scss">
+  .support {
+    width: min(380px, calc(100vw - 32px));
+    padding: 34px 30px 30px;
+    border: 1px solid #d7c1ad;
+    border-radius: 24px;
+    background: #fff;
+    text-align: center;
+    box-shadow: 0 26px 70px rgb(0 0 0 / 0.12);
+
+    &::backdrop {
+      background: rgb(255 255 255 / 0.7);
+      backdrop-filter: blur(4px);
+    }
+  }
+
+  h2 {
+    font-family: var(--font-script);
+    font-size: 40px;
+    line-height: 1.2;
+  }
+
+  p {
+    margin-top: 6px;
+    color: var(--taupe);
+    font-size: 15px;
+  }
+
+  .mail,
+  .tel {
+    display: block;
+    text-decoration: none;
+  }
+
+  .mail {
+    margin-top: 20px;
+    font-size: 17px;
+    word-break: break-word;
+    border-bottom: 1px solid currentColor;
+    width: fit-content;
+    margin-inline: auto;
+    padding-bottom: 2px;
+  }
+
+  .tel {
+    margin-top: 12px;
+    color: var(--taupe);
+    font-size: 15px;
+  }
+
+  .close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 26px;
+    line-height: 1;
+    color: #6d6d6d;
+  }
+</style>

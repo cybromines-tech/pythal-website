@@ -1,6 +1,8 @@
 ---
 import Arrow from './Arrow.astro';
 import LoopVideo from './LoopVideo.astro';
+
+const shopUrl = 'https://pythal.ae/';
 ---
 
 <section class="hero" aria-labelledby="hero-title">
@@ -35,8 +37,7 @@ import LoopVideo from './LoopVideo.astro';
       door.
     </p>
 
-    <a class="cta cta-edition pill" href="#fashion">EXPLORE THE EDITION <Arrow class="only-desktop" /></a>
-    <a class="cta cta-gift pill" href="#bundles">FIND A GIFT <Arrow class="only-desktop" /></a>
+    <a class="cta pill" href={shopUrl} target="_blank" rel="noopener">SHOP NOW <Arrow class="only-desktop" /></a>
   </div>
 </section>
 
@@ -108,36 +109,17 @@ import LoopVideo from './LoopVideo.astro';
     }
   }
 
+  // One pill, where the pair used to start; it opens the Pythal store.
   .cta {
     z-index: 3;
-    justify-content: flex-start;
     gap: u(6);
     @include text(20);
+    @include at(48, 585 - $top, 224, 44);
 
     @include phone {
-      justify-content: center;
       background: #f4f1ea;
       @include text(13.5);
-    }
-  }
-
-  .cta-edition {
-    @include at(48, 585 - $top, 258, 44);
-    padding-left: u(17);
-
-    @include phone {
       @include at(25, 330 - $p-top, 153, 26);
-      padding-left: 0;
-    }
-  }
-
-  .cta-gift {
-    @include at(338, 585 - $top, 182, 44);
-    padding-left: u(21);
-
-    @include phone {
-      @include at(26, 366 - $p-top, 152, 24);
-      padding-left: 0;
     }
   }
 </style>
